@@ -16,10 +16,13 @@ export default function Page(){
     const a=await Pi.authenticate(["username","payments"],()=>{});
     setUser(a.user);
   };
-  const pay=(a:any,m:any)=>{
-    const Pi=(window as any).Pi;
-    Pi.createPayment({amount:a, memo:m, metadata:{m}},{
-      onReadyForServerApproval:(id:any)=>{ console.log(id); alert("Paiement "+m+" en attente - backend à venir"); },
+  onReadyForServerApproval: async (id:any)=>{
+  await fetch("/api/approve",{method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({paymentId:id})});
+},
+onReadyForServerCompletion: async (id:any, tx:any)=>{
+  await fetch("/api/complete",{method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({paymentId:id, txid:tx})});
+  alert("Paiement "+m+" RÉUSSI! TX:"+tx+" ✅");
+},
       onReadyForServerCompletion:(id:any, tx:any)=>{ alert("Paiement OK "+tx); },
       onCancel:()=>{},
       onError:(e:any)=>{ alert(e); }
