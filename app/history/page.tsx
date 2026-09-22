@@ -8,7 +8,7 @@ export default function History(){
  ]
  return(
   <div style={{background:'#0f172a', minHeight:'100vh', color:'white', padding:'16px'}}>
-   <h2 style={{color:'#facc15', textAlign:'center'}}>GARGOURA DASHBOARD 💳</h2>
+   <h2 style={{color:'#facc15', textAlign:'center'}}>GARGOURA DIGITAL BANK DASHBOARD 💳</h2>
    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px', marginTop:'12px'}}>
     <div style={{background:'#1e293b', padding:'12px', borderRadius:'10px', textAlign:'center'}}><small style={{color:'#94a3b8'}}>SOLDE PI</small><h3 style={{color:'#facc15'}}>1,250 π</h3></div>
     <div style={{background:'#1e293b', padding:'12px', borderRadius:'10px', textAlign:'center'}}><small style={{color:'#94a3b8'}}>XAF CEMAC</small><h3>812,500 XAF</h3></div>
