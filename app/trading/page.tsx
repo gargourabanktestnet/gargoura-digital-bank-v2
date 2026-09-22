@@ -10,7 +10,7 @@ export default function Trading(){
  const pairs = ['BTC/PI','XRP/PI','XLM/PI','SOL/PI','BNB/PI','USDT/PI','USDC/PI']
  return(
   <div style={{background:'#0f172a', minHeight:'100vh', color:'white', padding:'16px'}}>
-   <h2 style={{color:'#facc15', textAlign:'center'}}>TRADING GARGOURA ⚡ Temps Réel</h2>
+   <h2 style={{color:'#facc15', textAlign:'center'}}>TRADING GARGOURA DIGITAL BANK ⚡ Temps Réel</h2>
    <div style={{marginTop:'15px'}}>
     {pairs.map(pair=>{
      const coin = pair.split('/')[0]
