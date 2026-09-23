@@ -24,7 +24,31 @@ export default function Home(){
  const [showNotif,setShowNotif]=useState(false)
  const notifs=[{id:1,t:'Depot valide',m:'50 pi recus GCV',time:'2 min'},{id:2,t:'Prix LIVE',m:'Pi 665.45 XAF +0.32%',time:'10 min'},{id:3,t:'KYC a faire',m:'Verifie identite',time:'1h'}]
  const GCV_XAF=314159*573
- const piBal=1250
+ const piBal=1250  const [piUser,setPiUser]=useState<any>(null)
+ const authPi = async()=>{
+  // @ts-ignore
+  const Pi = window.Pi
+  if(!Pi){alert('Ouvre dans Pi Browser!');return}
+  Pi.init({version:"2.0", sandbox:true})
+  const scopes=['username','payments']
+  const auth = await Pi.authenticate(scopes,(p:any)=>{console.log(p)})
+  setPiUser(auth.user)
+  alert('Bienvenue '+auth.user.username+' - GDB Connecté Pi!')
+ }
+ const payWithPi = async()=>{
+  // @ts-ignore
+  const Pi = window.Pi
+  Pi.createPayment({
+   amount: parseFloat(piAmt||'1'),
+   memo: 'GDB Transfer '+phone,
+   metadata: {phone}
+  },{
+   onReadyForServerApproval:(id:any)=>{console.log('Approbation',id)},
+   onReadyForServerCompletion:(id:any,tx:any)=>{alert('Paiement Pi réussi! '+id);setTxs([{id, type:'envoye', amount:piAmt+' pi', xaf:'Payé Pi SDK', from:'Pi Network', mode:'GCV'},...txs])},
+   onCancel:(id:any)=>{alert('Annulé')},
+   onError:(e:any)=>{alert('Erreur Pi '+e)}
+  })
+}
  useEffect(()=>{const i=setInterval(()=>{const c=(Math.random()-0.45)*1.2;setLiveRate(r=>+(r+c).toFixed(2));setTrend((c>0?'+':'')+c.toFixed(2)+'%')},2500);return()=>clearInterval(i)},[])
  const resultTo=(amount/(useGCV?CURRENCIES.find(c=>c.code===from)?.rate||GCV_XAF:CURRENCIES.find(c=>c.code===from)?.market||665.45)).toFixed(6)
  const doSend=()=>{if(!phone||!piAmt)return alert('Remplis');const n={id:Date.now(),type:'envoye',amount:piAmt+' pi',xaf:(parseFloat(piAmt)*(useGCV?GCV_XAF:liveRate)).toLocaleString()+' XAF',date:new Date().toLocaleString(),status:'ok',from:'Vers '+phone,mode:useGCV?'GCV':'Exchange'};setTxs([n,...txs]);setShowReceipt(n);setPhone('');setPiAmt('')}
