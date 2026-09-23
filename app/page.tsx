@@ -29,7 +29,7 @@ export default function Home(){
   {id:2,t:'Prix LIVE ↑',m:'Pi passe à 665.45 XAF +0.32%',time:'10 min'},
   {id:3,t:'KYC à faire',m:'Vérifie ton identité pour débloquer 1,250 π',time:'1h'},
  ])
- const GCV_XAF=314159*573;const piBal=1250
+ const GCV_XAF=314159*573;const piBal=1
  useEffect(()=>{const i=setInterval(()=>{const c=(Math.random()-0.45)*1.2;setLiveRate(r=>+(r+c).toFixed(2));setTrend((c>0?'+':'')+c.toFixed(2)+'%')},2500);return()=>clearInterval(i)},[])
  const resultTo=(amount/(useGCV?CURRENCIES.find(c=>c.code===from)?.rate||GCV_XAF:CURRENCIES.find(c=>c.code===from)?.market||665.45)).toFixed(6)
  const doSend=()=>{if(!phone||!piAmt)return alert('Remplis!');const n={id:Date.now(),type:'envoyé',amount:piAmt+' π',xaf:(parseFloat(piAmt)*(useGCV?GCV_XAF:liveRate)).toLocaleString()+' XAF',date:new Date().toLocaleString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}),status:'ok',from:'Vers '+phone,mode:useGCV?'GCV':'Exchange'};setTxs([n,...txs]);setShowReceipt(n);setPhone('');setPiAmt('')}
@@ -52,7 +52,7 @@ export default function Home(){
      <div style={{width:'90%',maxWidth:'370px',background:'#0f172a',height:'100%',overflowY:'auto',borderRight:'2px solid #facc15',padding:'14px'}}>
       <div style={{display:'flex',justifyContent:'space-between'}}><b style={{color:'#facc15'}}>GDB FINAL V8B</b><button onClick={()=>setMenuOpen(false)} style={{background:'#1e293b',border:'1px solid #334155',padding:'8px 12px',borderRadius:'8px',color:'white'}}>X</button></div>
       <div style={{background:'linear-gradient(135deg,#facc15,#f59e0b)',padding:'12px',borderRadius:'12px',color:'black',margin:'12px 0'}}>
-       <small>Solde {kycOk?'Vérifié ✓':'Non vérifié'}</small><h2 style={{margin:'4px 0'}}>1,250 π</h2><small>GCV ${(piBal*314159).toLocaleString()} • {(piBal*liveRate).toLocaleString()} XAF</small>
+       <small>Solde {kycOk?'Vérifié ✓':'Non vérifié'}</small><h2 style={{margin:'4px 0'}}>1 π</h2><small>GCV ${(piBal*314159).toLocaleString()} • {(piBal*liveRate).toLocaleString()} XAF</small>
        <div style={{marginTop:'8px',display:'flex',gap:'6px'}}><button onClick={()=>setUseGCV(true)} style={{flex:1,background:useGCV?'black':'rgba(0,0,0,0.2)',color:useGCV?'#facc15':'black',border:'none',padding:'6px',borderRadius:'6px',fontSize:'10px',fontWeight:'bold'}}>GCV $314k</button><button onClick={()=>setUseGCV(false)} style={{flex:1,background:!useGCV?'black':'rgba(0,0,0,0.2)',color:!useGCV?'#22c55e':'black',border:'none',padding:'6px',borderRadius:'6px',fontSize:'10px',fontWeight:'bold'}}>LIVE {liveRate}</button></div>
       </div>
       <div style={{display:'grid',gap:'6px'}}>
