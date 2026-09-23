@@ -1,10 +1,2 @@
-export default function RootLayout({children}:{children:React.ReactNode}){
- return(
-  <html lang="fr">
-   <head>
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-   </head>
-   <body style={{margin:0, background:'#0f172a'}}>{children}</body>
-  </html>
- )
-}
+export const metadata = { title: 'GDB' }
+export default function RootLayout({children}:{children:any}){ return(<html><body style={{margin:0}}>{children}</body></html>)}
