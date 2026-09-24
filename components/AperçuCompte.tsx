@@ -1,69 +1,34 @@
 'use client'
-import {useState} from 'react'
-import {Lang, getT} from '../lib/lang'
-
-export default function ApercuCompte({lang}:{lang:Lang}){
-  const [showQR,setShowQR]=useState(false)
-  const account = "GDB-2026-370246"
-  const phone = "+235 92 82 52 62"
-
+export default function ApercuCompte({lang}:any){
   return(
-    <div style={{display:'flex',flexDirection:'column',gap:16}}>
-      {/* Aperçu du Compte */}
-      <div style={{background:'#fff',borderRadius:20,padding:18,border:'1px solid #e2e8f0',boxShadow:'0 4px 12px rgba(0,0,0,0.04)'}}>
-        <div style={{fontWeight:900,fontSize:17,marginBottom:16,color:'#0f172a'}}>Aperçu du Compte</div>
+    <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:18,padding:14}}>
+      <div style={{fontWeight:900,fontSize:16,color:'#0f172a'}}>Aperçu du Compte</div>
+      <div style={{color:'#64748b',fontSize:12,marginTop:2}}>GDB-2026-370246 • Tchad</div>
 
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'14px 0',borderBottom:'1px solid #e2e8f0'}}>
-          <div style={{display:'flex',gap:12,alignItems:'center'}}>
-            <div style={{width:44,height:44,borderRadius:'50%',background:'#eff6ff',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20}}>💳</div>
-            <div><div style={{fontWeight:700,fontSize:14}}>Numéro de Compte Bancaire</div><div style={{fontSize:13,color:'#64748b'}}>{account}</div></div>
+      <div style={{display:'flex',gap:12,marginTop:14,alignItems:'center'}}>
+        <div style={{width:80,height:80,background:'#f1f5f9',borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10}}>QR CODE</div>
+        <div style={{flex:1}}>
+          <div style={{background:'#f8fafc',borderRadius:10,padding:8,marginBottom:8}}>
+            <div style={{fontSize:10,color:'#64748b'}}>TITULAIRE</div>
+            <div style={{fontWeight:800,fontSize:13}}>Gargoura Saleh</div>
           </div>
-        </div>
-
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'14px 0',borderBottom:'1px solid #e2e8f0'}}>
-          <div style={{display:'flex',gap:12,alignItems:'center'}}>
-            <div style={{width:44,height:44,borderRadius:'50%',background:'#f0fdf4',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20}}>🔳</div>
-            <div><div style={{fontWeight:700,fontSize:14}}>Voir QR</div><div style={{fontWeight:700,fontSize:14}}>Code</div><div style={{fontSize:12,color:'#64748b'}}>Recevoir</div></div>
-          </div>
-          <button onClick={()=>setShowQR(!showQR)} style={{border:'none',background:'transparent',fontWeight:800,fontSize:14,color:'#0f172a'}}>{showQR?'Masquer':'Afficher le Code QR'}</button>
-        </div>
-
-        {showQR && (
-          <div style={{textAlign:'center',padding:16,background:'#f8fafc',borderRadius:12,margin:'8px 0'}}>
-            <div style={{width:140,height:140,background:'#fff',margin:'0 auto',border:'2px solid #0f172a',display:'flex',alignItems:'center',justifyContent:'center',fontSize:10}}>QR: {account}<br/>{phone}</div>
-            <div style={{fontSize:12,color:'#64748b',marginTop:8}}>Scannez pour recevoir des paiements π</div>
-          </div>
-        )}
-
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'14px 0'}}>
-          <div style={{display:'flex',gap:12,alignItems:'center'}}>
-            <div style={{width:44,height:44,borderRadius:'50%',background:'#f0fdf4',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20}}>📞</div>
-            <div><div style={{fontWeight:700,fontSize:14}}>Numéro de Téléphone</div><div style={{fontSize:13,color:'#64748b'}}>{phone}</div></div>
+          <div style={{background:'#f8fafc',borderRadius:10,padding:8}}>
+            <div style={{fontSize:10,color:'#64748b'}}>STATUT</div>
+            <div style={{fontWeight:800,fontSize:13,color:'#16a34a'}}>● Vérifié GCV</div>
           </div>
         </div>
       </div>
 
-      {/* Fonctionnalités Courantes */}
-      <div style={{background:'#fff',borderRadius:20,padding:18,border:'1px solid #e2e8f0'}}>
-        <div style={{fontWeight:900,fontSize:17,marginBottom:16,color:'#0f172a'}}>Fonctionnalités Courantes</div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:10}}>
-          {[
-            {i:'⇄',l:'Transférer',c:'#dbeafe'},
-            {i:'💳',l:'Virement Bancaire',c:'#dbeafe'},
-            {i:'📈',l:'Pi DEX',c:'#fce7f3'},
-            {i:'🔄',l:'Convertir',c:'#dcfce7'},
-            {i:'📊',l:'Trading',c:'#dcfce7'},
-            {i:'✨',l:'Pi Automation',c:'#f3e8ff'},
-            {i:'🔗',l:'Blockchain',c:'#dbeafe'},
-            {i:'🛍️',l:'Shopping',c:'#fce7f3'},
-          ].map(f=>(
-            <div key={f.l} style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:10,textAlign:'center'}}>
-              <div style={{width:36,height:36,margin:'0 auto',background:f.c,borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center'}}>{f.i}</div>
-              <div style={{fontSize:10,fontWeight:700,marginTop:6,lineHeight:1.1}}>{f.l}</div>
-            </div>
-          ))}
+      <div style={{marginTop:14,display:'flex',gap:8}}>
+        <div style={{flex:1,background:'#eef2ff',borderRadius:10,padding:10,textAlign:'center'}}>
+          <div style={{fontSize:11,color:'#64748b'}}>Total Transac.</div>
+          <div style={{fontWeight:900}}>1 247</div>
+        </div>
+        <div style={{flex:1,background:'#fefce8',borderRadius:10,padding:10,textAlign:'center'}}>
+          <div style={{fontSize:11,color:'#64748b'}}>GCV</div>
+          <div style={{fontWeight:900}}>314 159 $</div>
         </div>
       </div>
     </div>
   )
-                 }
+}
