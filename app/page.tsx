@@ -2,6 +2,7 @@
 import {useState,useEffect} from 'react'
 import {getT, langOptions, Lang} from '../lib/lang'
 import SoldeGCV from '../components/SoldeGCV'
+import ApercuCompte from '../components/ApercuCompte'
 
 function Item({icon,title,sub}:{icon:string,title:string,sub:string}){
   return(
@@ -17,9 +18,8 @@ export default function Pro(){
   const [open,setOpen]=useState(false)
   const [showLang,setShowLang]=useState(false)
   const t = getT(lang)
-
-  useEffect(()=>{ const saved = localStorage.getItem('gdb-lang') as Lang; if(saved) setLang(saved)},[])
-  const change = (k:Lang)=>{setLang(k); localStorage.setItem('gdb-lang',k); setShowLang(false)}
+  useEffect(()=>{ const s=localStorage.getItem('gdb-lang') as Lang; if(s) setLang(s)},[])
+  const change=(k:Lang)=>{setLang(k); localStorage.setItem('gdb-lang',k); setShowLang(false)}
 
   return(
     <div style={{minHeight:'100vh',background:'#f1f5f9',fontFamily:'system-ui',paddingBottom:80}}>
@@ -27,7 +27,7 @@ export default function Pro(){
         <div style={{display:'flex',alignItems:'center',gap:10}}>
           <button onClick={()=>setOpen(!open)} style={{background:'transparent',border:'none',color:'#facc15',fontSize:22}}>☰</button>
           <div style={{width:38,height:38,borderRadius:'50%',background:'radial-gradient(circle,#fde68a,#facc15,#a16207)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:900,color:'#78350f'}}>π</div>
-          <div><div style={{color:'#fff',fontWeight:900,lineHeight:1}}>Gargoura</div><div style={{color:'#94a3b8',fontSize:10}}>Gargoura Digital Bank</div></div>
+          <div><div style={{color:'#fff',fontWeight:900,lineHeight:1}}>Gargoura</div><div style={{color:'#94a3b8',fontSize:10}}>Gargoura Digital Bank • GCV 314 159$</div></div>
         </div>
         <div style={{display:'flex',gap:10,alignItems:'center'}}>
           <button onClick={()=>setShowLang(true)} style={{background:'#1e293b',border:'1px solid #facc15',borderRadius:20,padding:'6px 10px',color:'#facc15'}}>🌐 {lang.toUpperCase()}</button>
@@ -39,18 +39,7 @@ export default function Pro(){
         <div style={{position:'fixed',inset:0,zIndex:100,display:'flex'}}>
           <div style={{width:300,background:'#fff',overflowY:'auto',padding:14}}>
             <div style={{display:'flex',justifyContent:'space-between',marginBottom:10}}><b>{t.menu}</b><button onClick={()=>setOpen(false)} style={{border:'none',background:'#0f172a',color:'#facc15',borderRadius:20,padding:'4px 12px'}}>✕</button></div>
-            <div style={{fontSize:11,color:'#64748b',fontWeight:800,margin:'12px 0 8px'}}>{t.comptes}</div>
             <Item icon="🏠" title={t.accueil} sub={t.dash}/><Item icon="👤" title={t.profil} sub={t.gerer}/><Item icon="💼" title={t.wallet} sub={t.crypto}/>
-            <div style={{fontSize:11,color:'#64748b',fontWeight:800,margin:'12px 0 8px'}}>{t.pay}</div>
-            <Item icon="⇄" title={t.p2p} sub={t.inter}/><Item icon="📱" title={t.mobile} sub={t.cemac}/><Item icon="🧾" title={t.fact} sub={t.eau}/><Item icon="$" title={t.conv} sub={t.dev}/>
-            <div style={{fontSize:11,color:'#64748b',fontWeight:800,margin:'12px 0 8px'}}>{t.trading}</div>
-            <Item icon="📈" title={t.tpi} sub={t.paires}/><Item icon="🔗" title={t.dex} sub={t.web3}/><Item icon="📊" title={t.staking} sub={t.cryptos}/><Item icon="🪙" title={t.token} sub={t.prepa}/>
-            <div style={{fontSize:11,color:'#64748b',fontWeight:800,margin:'12px 0 8px'}}>{t.voyage}</div>
-            <Item icon="✈️" title={t.res} sub={t.vol}/><Item icon="🏛️" title={t.gov} sub={t.dem}/><Item icon="🛃" title={t.douane} sub={t.estim}/>
-            <div style={{fontSize:11,color:'#64748b',fontWeight:800,margin:'12px 0 8px'}}>{t.bank}</div>
-            <Item icon="💳" title={t.cartes} sub={t.virt}/><Item icon="🛒" title={t.ecommerce} sub={t.plat}/><Item icon="🚗" title={t.auto} sub={t.marques}/>
-            <div style={{fontSize:11,color:'#64748b',fontWeight:800,margin:'12px 0 8px'}}>{t.secu}</div>
-            <Item icon="🛡️" title={t.sec} sub={t.prot}/><Item icon="⚖️" title={t.conf} sub={t.normes}/><Item icon="🧠" title={t.surv} sub={t.mon}/>
           </div>
           <div onClick={()=>setOpen(false)} style={{flex:1,background:'rgba(0,0,0,0.4)'}}></div>
         </div>
@@ -70,21 +59,19 @@ export default function Pro(){
         </div>
       )}
 
-      <div style={{padding:14}}>
-        {/* ICI TA CARTE GCV OFFICIELLE */}
+      <div style={{padding:14,display:'flex',flexDirection:'column',gap:20}}>
+        {/* CAPTURE 1 */}
         <SoldeGCV lang={lang} />
 
-        <div style={{marginTop:16,background:'#0f172a',borderRadius:16,padding:14,border:'1px solid #facc15'}}>
-          <div style={{color:'#facc15',fontWeight:800,fontSize:12}}>VALEUR GCV COMMUNAUTAIRE</div>
-          <div style={{color:'#fff',marginTop:4,fontSize:13}}>1 π = 314 159 USD = Référence Pi Network • Tous calculs basés sur GCV</div>
-        </div>
-      </div>
+        {/* CAPTURE 2 */}
+        <ApercuCompte lang={lang} />
 
-      <div style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',justifyContent:'space-around',padding:'8px 0'}}>
-        {[{i:'🏠',l:'Accueil'},{i:'⇄',l:'Paiements'},{i:'📈',l:'Trading'},{i:'🏛️',l:'Services'},{i:'✨',l:'Innov.'},{i:'🛡️',l:'Sécurité'},{i:'❓',l:'Support'}].map(b=>(
-          <div key={b.l} style={{textAlign:'center',fontSize:10,color:'#64748b'}}><div style={{fontSize:18}}>{b.i}</div>{b.l}</div>
-        ))}
+        {/* Preuve GCV */}
+        <div style={{background:'#0f172a',borderRadius:16,padding:14,border:'1px solid #facc15',textAlign:'center'}}>
+          <div style={{color:'#facc15',fontWeight:900,fontSize:12}}>2 CAPTURES INTÉGRÉES • VERT CONFIRMÉ ✅</div>
+          <div style={{color:'#fff',marginTop:4,fontSize:12}}>1 π = 314 159 USD • Compte GDB-2026-370246</div>
+        </div>
       </div>
     </div>
   )
-            }
+}
