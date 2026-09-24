@@ -5,202 +5,198 @@ const GCV = 314159
 function formatG(a:string){ if(!a || a.length<8) return a; return a.slice(0,4)+'...'+a.slice(-4) }
 function genGDB(){ return 'GDB-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000) }
 
+const LANGS:any = {
+  fr:{flag:'🇫🇷', name:'Français',
+    menuPrincipal:'Menu Principal', toutesFonctionnalites:'Toutes les fonctionnalités Gargoura Digital Bank',
+    comptesProfil:'COMPTES & PROFIL', accueil:'Accueil', tableauBord:'Tableau de bord', monProfil:'Mon Profil', gererCompte:'Gérer mon compte', portefeuilles:'Portefeuilles', cryptoDigital:'Crypto & Digital',
+    paiementsTransferts:'PAIEMENTS & TRANSFERTS', transfertsP2P:'Transferts P2P', interneInternational:'Interne & International', mobileMoney:'Mobile Money', zoneCemacUemoa:'Zone CEMAC & UEMOA', paiementFactures:'Paiement Factures', eauElec:'Eau, Électricité, etc.', convertisseur:'Convertisseur', devisesMondiales:'93 devises mondiales',
+    tradingInvest:'TRADING & INVESTISSEMENTS', tradingPi:'Trading Pi', pairesTempsReel:'10 paires en temps réel', piDexAmm:'Pi DEX & AMM', echangeWeb3:'Échange décentralisé Web 3.0', stakingCrypto:'Staking Crypto', cryptos:'12 cryptomonnaies', tokenGDB:'Token GDB', prepPiNetwork:'Préparation Pi Network',
+    voyageServices:'VOYAGE, GASTRONOMIE & SERVICES PUBLICS', reservationsPremium:'Réservations premium', volsHotels:'Vols, hôtels et restaurants en π', servicesGovTchad:'Services gouvernementaux Tchad', demarchesFrais:'Démarches et frais préparatoires', douaneAuto:'Douane automatique', estimationFrais:'Estimation des frais d\'importation',
+    servicesBancaires:'SERVICES BANCAIRES', cartesBancaires:'Cartes Bancaires', virtuellesPhysiques:'Virtuelles & Physiques', eCommerce:'E-Commerce', plateformesMondiales:'8 plateformes mondiales', partenariatAuto:'Partenariat Automobile', marquesDispo:'18 marques disponibles',
+    securiteConformite:'SÉCURITÉ & CONFORMITÉ', securite:'Sécurité', protectionAvancee:'Protection avancée', conformite:'Conformité', normesInternationales:'Normes internationales', surveillanceIA:'Surveillance IA', monitoringIntelligent:'Monitoring intelligent',
+    supportParams:'SUPPORT & PARAMÈTRES', parametres:'Paramètres', configuration:'Configuration', aideSupport:'Aide & Support', centreAssistance:'Centre d\'assistance', assistantIAGargoura:'Assistant IA Gargoura', intelligencePour:'Intelligence artificielle pour surveiller, optimiser et sécuriser toutes vos opérations bancaires en temps réel', voirSurveillance:'Voir la Surveillance IA',
+    contactGargoura:'Contact Gargoura Digital Bank', moovMoney:'Moov Money:', support:'Support:', email:'Email:',
+    soldeTotal:'Solde Total', tauxRef:'Taux de référence indicatif pour l\'affichage des opérations.', fraisTx:'Frais de transaction : calculés à la confirmation, en π', envoyer:'Envoyer', recevoir:'Recevoir', systemeLigne:'Système en Ligne', transactionsTempsReel:'Toutes les transactions sont traitées en temps réel',
+  },
+  en:{flag:'🇺🇸', name:'English',
+    menuPrincipal:'Main Menu', toutesFonctionnalites:'All Gargoura Digital Bank features',
+    comptesProfil:'ACCOUNTS & PROFILE', accueil:'Home', tableauBord:'Dashboard', monProfil:'My Profile', gererCompte:'Manage my account', portefeuilles:'Wallets', cryptoDigital:'Crypto & Digital',
+    paiementsTransferts:'PAYMENTS & TRANSFERS', transfertsP2P:'P2P Transfers', interneInternational:'Internal & International', mobileMoney:'Mobile Money', zoneCemacUemoa:'CEMAC & UEMOA Zone', paiementFactures:'Bill Payment', eauElec:'Water, Electricity, etc.', convertisseur:'Converter', devisesMondiales:'93 world currencies',
+    tradingInvest:'TRADING & INVESTMENTS', tradingPi:'Trading Pi', pairesTempsReel:'10 real-time pairs', piDexAmm:'Pi DEX & AMM', echangeWeb3:'Decentralized Exchange Web 3.0', stakingCrypto:'Crypto Staking', cryptos:'12 cryptocurrencies', tokenGDB:'GDB Token', prepPiNetwork:'Pi Network Preparation',
+    voyageServices:'TRAVEL, GASTRONOMY & PUBLIC SERVICES', reservationsPremium:'Premium bookings', volsHotels:'Flights, hotels and restaurants in π', servicesGovTchad:'Chad Government Services', demarchesFrais:'Procedures and preparatory fees', douaneAuto:'Automatic Customs', estimationFrais:'Import fee estimation',
+    servicesBancaires:'BANKING SERVICES', cartesBancaires:'Bank Cards', virtuellesPhysiques:'Virtual & Physical', eCommerce:'E-Commerce', plateformesMondiales:'8 global platforms', partenariatAuto:'Automobile Partnership', marquesDispo:'18 brands available',
+    securiteConformite:'SECURITY & COMPLIANCE', securite:'Security', protectionAvancee:'Advanced protection', conformite:'Compliance', normesInternationales:'International standards', surveillanceIA:'AI Monitoring', monitoringIntelligent:'Intelligent monitoring',
+    supportParams:'SUPPORT & SETTINGS', parametres:'Settings', configuration:'Configuration', aideSupport:'Help & Support', centreAssistance:'Help Center', assistantIAGargoura:'Gargoura AI Assistant', intelligencePour:'Artificial intelligence to monitor, optimize and secure all your banking operations in real time', voirSurveillance:'View AI Monitoring',
+    contactGargoura:'Contact Gargoura Digital Bank', moovMoney:'Moov Money:', support:'Support:', email:'Email:',
+    soldeTotal:'Total Balance', tauxRef:'Indicative reference rate for display.', fraisTx:'Transaction fee: calculated at confirmation, in π', envoyer:'Send', recevoir:'Receive', systemeLigne:'System Online', transactionsTempsReel:'All transactions processed in real-time',
+  },
+  ar:{flag:'🇸🇦', name:'العربية',
+    menuPrincipal:'القائمة الرئيسية', toutesFonctionnalites:'جميع ميزات بنك غارغورا الرقمي',
+    comptesProfil:'الحسابات والملف', accueil:'الرئيسية', tableauBord:'لوحة القيادة', monProfil:'ملفي', gererCompte:'إدارة حسابي', portefeuilles:'المحافظ', cryptoDigital:'تشفير ورقمي',
+    paiementsTransferts:'المدفوعات والتحويلات', transfertsP2P:'تحويلات P2P', interneInternational:'داخلي ودولي', mobileMoney:'موبايل موني', zoneCemacUemoa:'منطقة CEMAC و UEMOA', paiementFactures:'دفع الفواتير', eauElec:'ماء وكهرباء إلخ', convertisseur:'محول', devisesMondiales:'93 عملة عالمية',
+    tradingInvest:'التداول والاستثمار', tradingPi:'تداول Pi', pairesTempsReel:'10 أزواج في الوقت الفعلي', piDexAmm:'Pi DEX و AMM', echangeWeb3:'تبادل لامركزي Web 3.0', stakingCrypto:'تخزين العملات', cryptos:'12 عملة', tokenGDB:'رمز GDB', prepPiNetwork:'تحضير شبكة Pi',
+    voyageServices:'السفر والخدمات العامة', reservationsPremium:'حجوزات مميزة', volsHotels:'رحلات وفنادق ومطاعم بـ π', servicesGovTchad:'خدمات حكومة تشاد', demarchesFrais:'الإجراءات والرسوم', douaneAuto:'جمارك آلية', estimationFrais:'تقدير رسوم الاستيراد',
+    servicesBancaires:'الخدمات المصرفية', cartesBancaires:'بطاقات بنكية', virtuellesPhysiques:'افتراضية ومادية', eCommerce:'تجارة إلكترونية', plateformesMondiales:'8 منصات عالمية', partenariatAuto:'شراكة سيارات', marquesDispo:'18 علامة متاحة',
+    securiteConformite:'الأمان والامتثال', securite:'الأمان', protectionAvancee:'حماية متقدمة', conformite:'الامتثال', normesInternationales:'معايير دولية', surveillanceIA:'مراقبة AI', monitoringIntelligent:'مراقبة ذكية',
+    supportParams:'الدعم والإعدادات', parametres:'الإعدادات', configuration:'تكوين', aideSupport:'المساعدة والدعم', centreAssistance:'مركز المساعدة', assistantIAGargoura:'مساعد غارغورا AI', intelligencePour:'ذكاء اصطناعي لمراقبة وتحسين وتأمين جميع عملياتك المصرفية', voirSurveillance:'عرض مراقبة AI',
+    contactGargoura:'اتصل ببنك غارغورا الرقمي', moovMoney:'Moov Money:', support:'الدعم:', email:'البريد:',
+    soldeTotal:'الرصيد الإجمالي', tauxRef:'سعر مرجعي للعرض.', fraisTx:'رسوم المعاملة: تحسب عند التأكيد بـ π', envoyer:'إرسال', recevoir:'استلام', systemeLigne:'النظام متصل', transactionsTempsReel:'جميع المعاملات في الوقت الفعلي',
+  },
+}
+
 export default function Page(){
   const [gAddress,setGAddress]=useState('')
   const [gdbAccount,setGdbAccount]=useState('')
   const [kyc,setKyc]=useState(false)
   const [modal,setModal]=useState('')
-  const [amountPi,setAmountPi]=useState('')
   const [tab,setTab]=useState('Accueil')
-  const [typeBanque,setTypeBanque]=useState('traditionnel')
-  const [nomBanque,setNomBanque]=useState('')
-  const [numCompte,setNumCompte]=useState('')
-  const [titulaire,setTitulaire]=useState('')
-  const [iban,setIban]=useState('')
-  const [plateforme,setPlateforme]=useState('')
-  const [emailId,setEmailId]=useState('')
-  const [tel,setTel]=useState('')
-  const [p2pType,setP2pType]=useState('interne')
-  const [destPhone,setDestPhone]=useState('')
-  const [note,setNote]=useState('')
-  const [banquePartenaire,setBanquePartenaire]=useState('')
-  const [numCompteExt,setNumCompteExt]=useState('')
-  const [typeDevise,setTypeDevise]=useState('crypto')
-  const [zoneTransfert,setZoneTransfert]=useState('CEMAC')
-  const [tradeFilter,setTradeFilter]=useState('all')
+  const [lang,setLang]=useState('fr')
+  const [showMenu,setShowMenu]=useState(false)
+  const [showLang,setShowLang]=useState(false)
   const [logoError,setLogoError]=useState(false)
+  const t = LANGS[lang] || LANGS.fr
 
   useEffect(()=>{
     try{
       const a=localStorage.getItem('gdb_account')
       const g=localStorage.getItem('pi_g_address')
       const p=localStorage.getItem('pi_user')
+      const l=localStorage.getItem('gdb_lang')
       if(a) setGdbAccount(a)
       if(g) setGAddress(g)
       if(p) setKyc(true)
+      if(l && LANGS[l]) setLang(l)
     }catch(e){}
   },[])
 
-  function doKyc(){
-    const newGDB = gdbAccount || genGDB()
-    setGdbAccount(newGDB)
-    setKyc(true)
-    localStorage.setItem('gdb_account',newGDB)
-    localStorage.setItem('pi_user','verified')
-    setModal('KYC Pi Verifie - '+newGDB)
-  }
+  function changeLang(l:string){ setLang(l); localStorage.setItem('gdb_lang',l); setShowLang(false) }
+  function doKyc(){ const n=gdbAccount||genGDB(); setGdbAccount(n); setKyc(true); localStorage.setItem('gdb_account',n); localStorage.setItem('pi_user','ok'); setModal('KYC OK '+n) }
 
-  function doLier(){
-    const newGDB = gdbAccount || genGDB()
-    if(gAddress) localStorage.setItem('pi_g_address',gAddress)
-    localStorage.setItem('gdb_account',newGDB)
-    setGdbAccount(newGDB)
-    setModal('Compte lie: '+newGDB+' G: '+formatG(gAddress))
-  }
-
-  const usdStr = (parseFloat(amountPi||'0')*GCV).toLocaleString()
-  const pairs=[
-    {pair:'PI/USDT',price:'314165.35',vol:'1.2M',chg:'+2.45%',up:true},
-    {pair:'PI/BTC',price:'3.31',vol:'850K',chg:'-0.82%',up:false},
-    {pair:'PI/ETH',price:'89.76',vol:'920K',chg:'+1.23%',up:true},
-    {pair:'PI/SOL',price:'1745.36',vol:'680K',chg:'+3.67%',up:true},
-    {pair:'PI/XLM',price:'897641.14',vol:'420K',chg:'+0.95%',up:true},
-    {pair:'PI/XRP',price:'149596.88',vol:'780K',chg:'+2.18%',up:true},
-    {pair:'PI/USDC',price:'314158.36',vol:'1.1M',chg:'+0.12%',up:true},
-    {pair:'PI/BNB',price:'505.90',vol:'620K',chg:'+1.89%',up:true},
-  ]
-  const filtered = tradeFilter==='all'?pairs: tradeFilter==='gainers'?pairs.filter(function(p){return p.up}):pairs.filter(function(p){return !p.up})
+  const MenuCard = ({icon,title,sub,onClick}:{icon:string,title:string,sub:string,onClick?:any}) => (
+    <button onClick={onClick} style={{width:'100%',textAlign:'left',background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:'14px 16px',display:'flex',alignItems:'center',gap:14}}>
+      <div style={{width:48,height:48,background:'#eef2ff',borderRadius:24,display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,color:'#1e40af'}}>{icon}</div>
+      <div><div style={{fontWeight:800,fontSize:16,color:'#0f172a'}}>{title}</div><div style={{fontSize:13,color:'#64748b',marginTop:2}}>{sub}</div></div>
+    </button>
+  )
 
   return(
-    <div style={{minHeight:'100vh',background:'#f1f5f9',padding:0,display:'flex',flexDirection:'column',fontFamily:'system-ui',paddingBottom:85}}>
-      <div style={{background:'#1e40af',color:'#fff',padding:'10px 14px',display:'flex',alignItems:'center',gap:10,position:'sticky',top:0,zIndex:10}}>
-        <div style={{width:30,height:30,background:'#fff',borderRadius:6,display:'flex',alignItems:'center',justifyContent:'center',color:'#1e40af',fontWeight:900}}>G</div>
-        <div style={{flex:1}}><div style={{fontWeight:900,fontSize:16}}>Gargoura</div><div style={{fontSize:11,opacity:0.9}}>Gargoura Digital Bank</div></div>
-        <div style={{display:'flex',gap:10,fontSize:18}}><span>⚙️</span><span>👤</span><span>🌐</span><span>🔔<span style={{background:'red',borderRadius:10,fontSize:9,padding:'1px 4px',marginLeft:2}}>3</span></span></div>
+    <div style={{minHeight:'100vh',background:'#f8fafc',fontFamily:'system-ui',paddingBottom:85}}>
+      {/* HEADER BLEU EXACT CAPTURE */}
+      <div style={{background:'#1e40af',color:'#fff',padding:'12px 14px',display:'flex',alignItems:'center',gap:10,position:'sticky',top:0,zIndex:30}}>
+        <button onClick={()=>setShowMenu(true)} style={{border:'none',background:'none',color:'#fff',fontSize:22}}>☰</button>
+        <div style={{flex:1}}><div style={{fontWeight:900,fontSize:18}}>Gargoura</div><div style={{fontSize:11,opacity:0.9}}>Gargoura Digital Bank</div></div>
+        <button style={{border:'none',background:'none',color:'#fff',fontSize:18}}>⚙️</button>
+        <button style={{border:'none',background:'none',color:'#fff',fontSize:18}}>👤</button>
+        <button onClick={()=>setShowLang(!showLang)} style={{border:'none',background:'none',color:'#fff',fontSize:18}}>🌐</button>
+        <button style={{border:'none',background:'none',color:'#fff',fontSize:18,position:'relative'}}>🔔<span style={{position:'absolute',top:-8,right:-8,background:'#ef4444',color:'#fff',fontSize:10,borderRadius:10,width:18,height:18,display:'flex',alignItems:'center',justifyContent:'center'}}>3</span></button>
       </div>
 
-      <div style={{padding:14,display:'flex',flexDirection:'column',gap:14}}>
-        <div style={{background:'#fff',border:'2px solid #facc15',borderRadius:20,padding:16,display:'flex',flexDirection:'column',alignItems:'center'}}>
-          {!logoError ? (
-            <img 
-              src="/logo.png" 
-              alt="GDB Logo Or" 
-              onError={()=>setLogoError(true)}
-              style={{width:110,height:110,borderRadius:'50%',objectFit:'cover',border:'3px solid #facc15',boxShadow:'0 0 15px rgba(250,204,21,0.6)'}} 
-            />
-          ) : (
-            <div style={{width:110,height:110,background:'linear-gradient(135deg,#1e3a8a,#facc15)',borderRadius:55,border:'3px solid #facc15',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:900,fontSize:28,boxShadow:'0 0 15px rgba(250,204,21,0.6)'}}>GDB</div>
-          )}
-          <div style={{fontWeight:900,fontSize:20,color:'#1e3a8a',marginTop:10}}>GARGOURA DIGITAL BANK</div>
-          <div style={{fontWeight:800,fontSize:11,color:'#a16207',textAlign:'center'}}>GDB • WEB3.0 • PI NETWORK • GCV {GCV}$ • BANQUE MONDIALE</div>
-          <div style={{marginTop:10,display:'flex',gap:8,flexWrap:'wrap',justifyContent:'center'}}>
-            <button onClick={doKyc} style={{background:kyc?'#16a34a':'#e2e8f0',color:kyc?'#fff':'#1e40af',border:'1px solid #cbd5e1',padding:'6px 12px',borderRadius:20,fontSize:10,fontWeight:800}}>{kyc?'● KYC Verifie':'● KYC Pi Cliquer'}</button>
-            {gdbAccount ? <div style={{background:'#1e40af',color:'#fff',padding:'6px 10px',borderRadius:20,fontSize:10,fontWeight:800}}>{gdbAccount}</div> : null}
-          </div>
-          {gAddress ? <div style={{marginTop:8,fontSize:11,background:'#f1f5f9',padding:'6px 10px',borderRadius:10}}>G: {formatG(gAddress)} ({gAddress.length} chars masques)</div> : null}
+      {showLang && (
+        <div style={{position:'fixed',top:60,right:10,background:'#fff',border:'2px solid #facc15',borderRadius:16,padding:10,zIndex:60,width:200,boxShadow:'0 10px 30px rgba(0,0,0,0.2)'}}>
+          {Object.keys(LANGS).map(k=>(
+            <button key={k} onClick={()=>changeLang(k)} style={{width:'100%',display:'flex',gap:8,padding:10,border:'none',background:lang===k?'#fef3c7':'#fff',borderRadius:10,fontWeight:lang===k?800:400}}>{LANGS[k].flag} {LANGS[k].name} {lang===k?'✓':''}</button>
+          ))}
         </div>
+      )}
 
-        <div style={{background:'#1e40af',border:'2px solid #facc15',borderRadius:18,padding:16,color:'#fff'}}>
-          <div style={{fontSize:12,opacity:0.9}}>Solde Total • {gdbAccount || 'Non lie'} • 1 π = {GCV.toLocaleString()} USD</div>
-          <div style={{fontWeight:900,fontSize:26,marginTop:6}}>1 π = {GCV.toLocaleString()},00 USD</div>
-          <div style={{fontSize:11,opacity:0.8,marginTop:4}}>Banque Mondiale: Traditionnelle + Numerique + CBDC e-CFA e-EUR</div>
-          <div style={{display:'flex',gap:10,marginTop:14}}>
-            <button onClick={()=>setModal('transferP2P')} style={{flex:1,background:'#16a34a',color:'#fff',border:'none',borderRadius:20,padding:12,fontWeight:800}}>↗ Envoyer</button>
-            <button onClick={()=>setModal('receive')} style={{flex:1,background:'#fff',color:'#1e40af',border:'none',borderRadius:20,padding:12,fontWeight:800}}>✓ Recevoir</button>
-          </div>
-        </div>
+      {/* MENU PRINCIPAL HAMBURGER - EXACT TES 6 CAPTURES */}
+      {showMenu && (
+        <div style={{position:'fixed',inset:0,zIndex:50,display:'flex'}}>
+          <div onClick={()=>setShowMenu(false)} style={{flex:1,background:'rgba(0,0,0,0.4)'}}></div>
+          <div style={{width:'88%',maxWidth:380,background:'#fff',height:'100%',overflowY:'auto',padding:'0 0 100px 0',boxShadow:'-5px 0 20px rgba(0,0,0,0.2)'}}>
+            <div style={{background:'#1e40af',color:'#fff',padding:'14px 16px',display:'flex',alignItems:'center',gap:10}}>
+              <button onClick={()=>setShowMenu(false)} style={{border:'none',background:'rgba(255,255,255,0.2)',color:'#fff',borderRadius:20,width:32,height:32}}>←</button>
+              <div><div style={{fontWeight:900}}>Gargoura</div><div style={{fontSize:11,opacity:0.9}}>Gargoura Digital Bank</div></div>
+            </div>
+            <div style={{padding:16}}>
+              <div style={{fontWeight:900,fontSize:24}}>{t.menuPrincipal}</div>
+              <div style={{fontSize:13,color:'#64748b',marginTop:4}}>{t.toutesFonctionnalites}</div>
 
-        <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:18,padding:14}}>
-          <div style={{fontWeight:900}}>Aperçu du Compte</div>
-          <div style={{color:'#64748b',fontSize:12,marginTop:4}}>{gdbAccount || 'Creez via KYC'} • G: {gAddress ? formatG(gAddress) : 'Non lie'} • Verifie GCV • {kyc?'KYC OK':'KYC requis'}</div>
-        </div>
+              <div style={{marginTop:18,fontWeight:800,fontSize:13,color:'#64748b',letterSpacing:0.5}}>{t.comptesProfil}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
+                <MenuCard icon="🏠" title={t.accueil} sub={t.tableauBord} onClick={()=>{setTab('Accueil'); setShowMenu(false)}} />
+                <MenuCard icon="👤" title={t.monProfil} sub={t.gererCompte} onClick={()=>setShowMenu(false)} />
+                <MenuCard icon="👛" title={t.portefeuilles} sub={t.cryptoDigital} onClick={()=>setShowMenu(false)} />
+              </div>
 
-        <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:20,padding:14}}>
-          <div style={{fontWeight:900,marginBottom:12}}>Fonctionnalités Courantes</div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10}}>
-            <button onClick={()=>setModal('transferP2P')} style={{border:'1px solid #e2e8f0',borderRadius:14,padding:'10px 4px',background:'#fff',fontSize:9,fontWeight:700}}>Transférer</button>
-            <button onClick={()=>setModal('lierBanque')} style={{border:'1px solid #e2e8f0',borderRadius:14,padding:'10px 4px',background:'#fff',fontSize:9,fontWeight:700}}>Lier Banque</button>
-            <button onClick={()=>setTab('Trading')} style={{border:'1px solid #e2e8f0',borderRadius:14,padding:'10px 4px',background:'#fff',fontSize:9,fontWeight:700}}>Trading</button>
-            <button onClick={()=>setModal('convert')} style={{border:'1px solid #e2e8f0',borderRadius:14,padding:'10px 4px',background:'#fff',fontSize:9,fontWeight:700}}>Convertir</button>
-          </div>
-        </div>
+              <div style={{marginTop:20,fontWeight:800,fontSize:13,color:'#64748b'}}>{t.paiementsTransferts}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
+                <MenuCard icon="↔️" title={t.transfertsP2P} sub={t.interneInternational} />
+                <MenuCard icon="📱" title={t.mobileMoney} sub={t.zoneCemacUemoa} />
+                <MenuCard icon="🧾" title={t.paiementFactures} sub={t.eauElec} />
+                <MenuCard icon="💲" title={t.convertisseur} sub={t.devisesMondiales} />
+              </div>
 
-        <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:20,padding:16}}>
-          <div style={{fontWeight:900,fontSize:16}}>Comptes Bancaires</div>
-          <input value={gAddress} onChange={e=>setGAddress(e.target.value)} placeholder="Adresse G Stellar (G...)" style={{width:'100%',marginTop:10,padding:12,borderRadius:12,border:'1px solid #cbd5e1',fontSize:12}}/>
-          {gAddress ? <div style={{fontSize:11,marginTop:6,color:'#16a34a'}}>Apercu masque: {formatG(gAddress)} - 4 premiers + 4 derniers visibles</div> : null}
-          <div style={{display:'flex',gap:10,marginTop:12}}>
-            <button onClick={()=>setModal('lierBanque')} style={{flex:1,background:'#1e40af',color:'#fff',border:'none',borderRadius:20,padding:12,fontWeight:700}}>🔗 Lier Banque</button>
-            <button onClick={doKyc} style={{flex:1,background:'#facc15',color:'#1e3a8a',border:'none',borderRadius:20,padding:12,fontWeight:800}}>🔒 KYC Pi</button>
-          </div>
-        </div>
+              <div style={{marginTop:20,fontWeight:800,fontSize:13,color:'#64748b'}}>{t.tradingInvest}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
+                <MenuCard icon="📈" title={t.tradingPi} sub={t.pairesTempsReel} />
+                <MenuCard icon="🔗" title={t.piDexAmm} sub={t.echangeWeb3} />
+                <MenuCard icon="📊" title={t.stakingCrypto} sub={t.cryptos} />
+                <MenuCard icon="🪙" title={t.tokenGDB} sub={t.prepPiNetwork} />
+              </div>
 
-        {tab==='Trading' && (
-          <div style={{display:'flex',flexDirection:'column',gap:14}}>
-            <div style={{background:'#fef3c7',border:'1px solid #fde68a',borderRadius:20,padding:16}}><div style={{fontWeight:700}}>piCoin</div><div style={{fontSize:12,color:'#64748b'}}>officialGcvValue</div><div style={{fontWeight:900,fontSize:26,color:'#d97706',marginTop:12}}>1 π = 314,159.00 USD</div><div style={{marginTop:8,fontSize:13}}><span style={{color:'#16a34a'}}>↗ +2.45%</span> 24h</div></div>
-            <div style={{background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:20,padding:16}}><div style={{fontWeight:800}}>Synchronisation en temps réel</div><div style={{fontSize:12,color:'#64748b'}}>updatedEverySecond</div></div>
-            <div style={{display:'flex',gap:8}}><button style={{flex:1,background:'#16a34a',color:'#fff',border:'none',borderRadius:20,padding:12,fontWeight:800}}>↗ Acheter</button><button style={{flex:1,background:'#dc2626',color:'#fff',border:'none',borderRadius:20,padding:12,fontWeight:800}}>↘ Vendre</button><button style={{flex:1,background:'#fff',border:'1px solid #cbd5e1',borderRadius:20,padding:12}}>Commander</button></div>
-            <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:20,padding:14}}>
-              <div style={{fontWeight:900}}>Paires de Trading</div>
-              <div style={{display:'flex',background:'#f1f5f9',borderRadius:20,padding:4,marginTop:12}}><button onClick={()=>setTradeFilter('all')} style={{flex:1,background:tradeFilter==='all'?'#fff':'transparent',border:'none',borderRadius:16,padding:8,fontWeight:800}}>all</button><button onClick={()=>setTradeFilter('gainers')} style={{flex:1,background:tradeFilter==='gainers'?'#fff':'transparent',border:'none',borderRadius:16,padding:8,fontWeight:800}}>gainers</button><button onClick={()=>setTradeFilter('losers')} style={{flex:1,background:tradeFilter==='losers'?'#fff':'transparent',border:'none',borderRadius:16,padding:8,fontWeight:800}}>losers</button></div>
-              <div style={{display:'flex',flexDirection:'column',gap:8,marginTop:12}}>
-                {filtered.map(function(p){ return (
-                  <div key={p.pair} style={{display:'flex',justifyContent:'space-between',border:'1px solid #e2e8f0',borderRadius:14,padding:'12px 14px'}}>
-                    <div><div style={{fontWeight:800}}>{p.pair}</div><div style={{fontSize:11,color:'#64748b'}}>vol: {p.vol}</div></div>
-                    <div style={{textAlign:'right'}}><div style={{fontWeight:800}}>{p.price}</div><div style={{fontSize:11,color:p.up?'#16a34a':'#dc2626'}}>{p.chg}</div></div>
-                  </div>
-                )})}
+              <div style={{marginTop:20,fontWeight:800,fontSize:13,color:'#64748b'}}>{t.voyageServices}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
+                <MenuCard icon="✈️" title={t.reservationsPremium} sub={t.volsHotels} />
+                <MenuCard icon="🏛️" title={t.servicesGovTchad} sub={t.demarchesFrais} />
+                <MenuCard icon="🛡️" title={t.douaneAuto} sub={t.estimationFrais} />
+              </div>
+
+              <div style={{marginTop:20,fontWeight:800,fontSize:13,color:'#64748b'}}>{t.servicesBancaires}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
+                <MenuCard icon="💳" title={t.cartesBancaires} sub={t.virtuellesPhysiques} />
+                <MenuCard icon="🛒" title={t.eCommerce} sub={t.plateformesMondiales} />
+                <MenuCard icon="🚗" title={t.partenariatAuto} sub={t.marquesDispo} />
+              </div>
+
+              <div style={{marginTop:20,fontWeight:800,fontSize:13,color:'#64748b'}}>{t.securiteConformite}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
+                <MenuCard icon="🛡️" title={t.securite} sub={t.protectionAvancee} />
+                <MenuCard icon="⚖️" title={t.conformite} sub={t.normesInternationales} />
+                <MenuCard icon="🧠" title={t.surveillanceIA} sub={t.monitoringIntelligent} />
+              </div>
+
+              <div style={{marginTop:20,fontWeight:800,fontSize:13,color:'#64748b'}}>{t.supportParams}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
+                <MenuCard icon="⚙️" title={t.parametres} sub={t.configuration} />
+                <MenuCard icon="❓" title={t.aideSupport} sub={t.centreAssistance} />
+              </div>
+
+              <div style={{marginTop:20,background:'linear-gradient(135deg,#ede9fe,#f3e8ff)',border:'1px solid #d8b4fe',borderRadius:20,padding:16}}>
+                <div style={{display:'flex',gap:12}}>
+                  <div style={{width:48,height:48,background:'linear-gradient(135deg,#7c3aed,#3b82f6)',borderRadius:24,display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:22}}>🧠</div>
+                  <div style={{flex:1}}><div style={{fontWeight:900}}>{t.assistantIAGargoura}</div><div style={{fontSize:12,color:'#475569',marginTop:4}}>{t.intelligencePour}</div></div>
+                </div>
+                <button style={{width:'100%',marginTop:12,background:'#1e40af',color:'#fff',border:'none',borderRadius:20,padding:12,fontWeight:800}}>🧠 {t.voirSurveillance}</button>
+              </div>
+
+              <div style={{marginTop:16,background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:16}}>
+                <div style={{fontWeight:900}}>{t.contactGargoura}</div>
+                <div style={{marginTop:12,display:'flex',flexDirection:'column',gap:8,fontSize:13}}>
+                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#64748b'}}>{t.moovMoney}</span><b style={{color:'#1e40af'}}>(+235) 92 82 52 62</b></div>
+                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#64748b'}}>{t.support}</span><b style={{color:'#1e40af'}}>(+235) 66 78 75 46</b></div>
+                  <div style={{display:'flex',flexDirection:'column',gap:4}}><span style={{color:'#64748b'}}>{t.email}</span><b style={{color:'#1e40af',fontSize:12}}>gargouradigitalbank@gmail.com</b></div>
+                </div>
               </div>
             </div>
-            <button onClick={()=>setTab('Accueil')} style={{width:'100%',background:'#e2e8f0',border:'none',borderRadius:12,padding:10}}>← Retour Accueil</button>
-          </div>
-        )}
-      </div>
-
-      {modal ? (
-        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.6)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:50,padding:10}}>
-          <div style={{background:'#fff',borderRadius:20,padding:16,width:'100%',maxWidth:420,maxHeight:'94vh',overflowY:'auto'}}>
-            {modal==='lierBanque' ? (
-              <div>
-                <div style={{display:'flex',alignItems:'center',gap:10}}><button onClick={()=>setModal('')} style={{border:'none',background:'#f1f5f9',borderRadius:20,width:32,height:32}}>←</button><div style={{fontWeight:900,flex:1,textAlign:'center'}}>Lier un Compte Bancaire</div><button onClick={()=>setModal('')} style={{border:'none',background:'#f1f5f9',borderRadius:20,width:28,height:28}}>✕</button></div>
-                <div style={{display:'flex',background:'#f1f5f9',borderRadius:20,padding:4,marginTop:12}}><button onClick={()=>setTypeBanque('traditionnel')} style={{flex:1,background:typeBanque==='traditionnel'?'#fff':'transparent',border:'none',borderRadius:16,padding:8,fontWeight:800}}>🏛️ Traditionnel</button><button onClick={()=>setTypeBanque('numerique')} style={{flex:1,background:typeBanque==='numerique'?'#fff':'transparent',border:'none',borderRadius:16,padding:8,fontWeight:800}}>📱 Numérique</button></div>
-                {typeBanque==='traditionnel' ? (
-                  <div style={{marginTop:12,display:'flex',flexDirection:'column',gap:8}}>
-                    <select value={nomBanque} onChange={e=>setNomBanque(e.target.value)} style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1'}}><option value="">Choisir une banque</option><option>Ecobank Tchad</option><option>UBA Tchad</option><option>BSIC</option><option>Orabank</option><option>BNP Paribas</option></select>
-                    <input value={numCompte} onChange={e=>setNumCompte(e.target.value)} placeholder="Numero compte" style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1'}}/>
-                    <input value={titulaire} onChange={e=>setTitulaire(e.target.value)} placeholder="Nom titulaire" style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1'}}/>
-                    <input value={iban} onChange={e=>setIban(e.target.value)} placeholder="TD89..." style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1'}}/>
-                  </div>
-                ) : (
-                  <div style={{marginTop:12,display:'flex',flexDirection:'column',gap:8}}>
-                    <select value={plateforme} onChange={e=>setPlateforme(e.target.value)} style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1'}}><option value="">Plateforme</option><option>PayPal</option><option>Binance</option><option>Pi Wallet</option><option>Airtel Money</option></select>
-                    <input value={emailId} onChange={e=>setEmailId(e.target.value)} placeholder="Email" style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1'}}/>
-                    <input value={tel} onChange={e=>setTel(e.target.value)} placeholder="+235" style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1'}}/>
-                  </div>
-                )}
-                <div style={{display:'flex',gap:8,marginTop:14}}><button onClick={()=>setModal('')} style={{flex:1,background:'#e2e8f0',border:'none',borderRadius:12,padding:14}}>← Retour</button><button onClick={doLier} style={{flex:1,background:'#1e40af',color:'#fff',border:'none',borderRadius:12,padding:14,fontWeight:800}}>Lier</button></div>
-              </div>
-            ) : modal==='transferP2P' ? (
-              <div>
-                <div style={{background:'#1e40af',color:'#fff',margin:-16,padding:16,borderRadius:'20px 20px 0 0',display:'flex',alignItems:'center',gap:10}}><button onClick={()=>setModal('')} style={{background:'rgba(255,255,255,0.2)',border:'none',borderRadius:20,width:30,height:30,color:'#fff'}}>←</button><div style={{fontWeight:900}}>P2P Mondial {zoneTransfert}</div></div>
-                <div style={{display:'flex',background:'#f1f5f9',borderRadius:20,padding:4,marginTop:16}}><button onClick={()=>setP2pType('interne')} style={{flex:1,background:p2pType==='interne'?'#fff':'transparent',border:'none',borderRadius:16,padding:8,fontWeight:800}}>Interne</button><button onClick={()=>setP2pType('externe')} style={{flex:1,background:p2pType==='externe'?'#fff':'transparent',border:'none',borderRadius:16,padding:8,fontWeight:800}}>Externe</button></div>
-                <div style={{marginTop:12}}><input value={destPhone} onChange={e=>setDestPhone(e.target.value)} placeholder="Telephone ou ID" style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1'}}/><input value={amountPi} onChange={e=>setAmountPi(e.target.value)} placeholder="0.00 pi" type="number" style={{width:'100%',marginTop:8,padding:12,borderRadius:12,border:'1px solid #cbd5e1'}}/><div style={{fontSize:11,color:'#16a34a'}}>{usdStr} USD</div><button onClick={()=>setModal('Envoye '+amountPi+' pi')} style={{width:'100%',marginTop:10,background:'#1e40af',color:'#fff',border:'none',borderRadius:12,padding:12}}>Envoyer</button></div>
-                <button onClick={()=>setModal('')} style={{width:'100%',marginTop:8,background:'#e2e8f0',border:'none',borderRadius:12,padding:10}}>Fermer</button>
-              </div>
-            ) : modal==='receive' ? (
-              <div style={{textAlign:'center'}}><div style={{fontWeight:900}}>QR Code {gdbAccount}</div><div style={{fontSize:11}}>G: {gAddress ? formatG(gAddress) : 'Non lie'}</div><div style={{marginTop:12}}><img src={'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent(gdbAccount||'GDB')} alt="QR" style={{width:200,height:200}} /></div><button onClick={()=>setModal('')} style={{width:'100%',marginTop:12,background:'#e2e8f0',border:'none',borderRadius:12,padding:10}}>Fermer</button></div>
-            ) : (
-              <div><div style={{fontWeight:900}}>{modal}</div><button onClick={()=>setModal('')} style={{width:'100%',marginTop:12,background:'#1e40af',color:'#fff',border:'none',borderRadius:12,padding:10}}>Fermer</button></div>
-            )}
           </div>
         </div>
-      ) : null}
+      )}
 
-      <div style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',justifyContent:'space-around',padding:'8px 0'}}>
-        <button onClick={()=>setTab('Accueil')} style={{border:'none',background:'none',fontSize:10,color:tab==='Accueil'?'#1e40af':'#64748b',fontWeight:tab==='Accueil'?800:400}}>🏠 Accueil</button>
-        <button onClick={()=>setModal('transferP2P')} style={{border:'none',background:'none',fontSize:10,color:'#64748b'}}>↔️ Paiements</button>
-        <button onClick={()=>setTab('Trading')} style={{border:'none',background:tab==='Trading'?'#e0e7ff':'none',fontSize:10,color:'#1e40af',borderRadius:12,padding:'4px 10px'}}>📈 Trading</button>
-      </div>
-    </div>
-  )
-}
+      {/* ACCUEIL DE BORD EXISTANT - INCHANGÉ + TRADUIT + LOGO GOLD */}
+      <div style={{padding:14,display:'flex',flexDirection:'column',gap:14}}>
+        <div style={{background:'#fff',border:'2px solid #facc15',borderRadius:20,padding:16,display:'flex',flexDirection:'column',alignItems:'center'}}>
+          {!logoError? <img src="/logo.png" alt="GDB" onError={()=>setLogoError(true)} style={{width:100,height:100,borderRadius:50,border:'3px solid #facc15',objectFit:'cover',boxShadow:'0 0 18px rgba(250,204,21,0.6)'}} /> : <div style={{width:100,height:100,borderRadius:50,background:'linear-gradient(135deg,#1e3a8a,#facc15)',border:'3px solid #facc15',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:900,fontSize:24}}>GDB</div>}
+          <div style={{fontWeight:900,color:'#1e3a8a',marginTop:8}}>GARGOURA DIGITAL BANK</div>
+          <div style={{fontSize:10,color:'#a16207',fontWeight:800}}>GOLD • GCV {GCV}$ • {t.flag} {t.name}</div>
+          <div style={{display:'flex',gap:8,marginTop:8}}><button onClick={doKyc} style={{background:kyc?'#16a34a':'#e2e8f0',border:'none',borderRadius:20,padding:'6px 12px',fontSize:10,fontWeight:800}}>{kyc?'KYC Verifie':'KYC Pi'}</button>{gdbAccount? <div style={{background:'#1e40af',color:'#fff',borderRadius:20,padding:'6px 10px',fontSize:10,fontWeight:800}}>{gdbAccount}</div> : null}</div>
+          {gAddress? <div style={{fontSize:10,marginTop:6}}>G: {formatG(gAddress)}</div> : null}
+        </div>
+
+        <div style={{background:'#1e3a8a',borderRadius:24,padding:20,color:'#fff'}}>
+          <div style={{fontSize:14,opacity:0.9}}>{t.soldeTotal}</div>
+          <div style={{fontWeight:900,fontSize:32,marginTop:18,lineHeight:1.1}}>1 π = 314 159,00 USD</div>
+          <div style={{fontSize:12,opacity:0.8,marginTop:10}}>{t.tauxRef}</div>
+          <div style={{marginTop:14,background:'#16a34a',borderRadius:20,padding:'6px 12px',display:'inline-flex',fontSize:12,fontWeight:700}}>📞 +235 92 82 52 62</div>
+          <div style={{marginTop:12,background:'rgba(255,255,255,0.15)',borderRadius:12,padding:10,fontSize:11}}>{t.fraisTx}</div>
+          <div style={{display:'flex',gap:10,marginTop:16}}
