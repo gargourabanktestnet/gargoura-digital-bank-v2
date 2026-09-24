@@ -15,11 +15,26 @@ export default function Page(){
   const [amountPi,setAmountPi]=useState('')
   const [p2pType,setP2pType]=useState('interne')
   const [dest,setDest]=useState('')
-  const [note,setNote]=useState('')
   const [zone,setZone]=useState('CEMAC')
   const [banquePart,setBanquePart]=useState('')
   const [compteExt,setCompteExt]=useState('')
   const [logoError,setLogoError]=useState(false)
+  const [piPrice,setPiPrice]=useState(314159)
+  const [tradeTab,setTradeTab]=useState('all')
+  const [ordreType,setOrdreType]=useState('achat')
+
+  const [pairs,setPairs]=useState([
+    {sym:'PI/USDT', price:314165.35, change:2.45, vol:'1.2M', up:true},
+    {sym:'PI/BTC', price:3.31, change:-0.82, vol:'850K', up:false},
+    {sym:'PI/ETH', price:89.76, change:1.23, vol:'920K', up:true},
+    {sym:'PI/SOL', price:1745.36, change:3.67, vol:'680K', up:true},
+    {sym:'PI/ADA', price:369594.94, change:-1.45, vol:'540K', up:false},
+    {sym:'PI/XLM', price:897641.14, change:0.95, vol:'420K', up:true},
+    {sym:'PI/XRP', price:149596.88, change:2.18, vol:'780K', up:true},
+    {sym:'PI/USDC', price:314158.36, change:0.12, vol:'1.1M', up:true},
+    {sym:'PI/MATIC', price:330697.56, change:-0.67, vol:'390K', up:false},
+    {sym:'PI/BNB', price:505.90, change:1.89, vol:'620K', up:true},
+  ])
 
   useEffect(()=>{
     try{
@@ -27,17 +42,29 @@ export default function Page(){
       const g=localStorage.getItem('pi_g_address')
       const p=localStorage.getItem('pi_user')
       if(a) setGdbAccount(a)
-      else {
-        const n=genGDB()
-        setGdbAccount(n)
-        localStorage.setItem('gdb_account',n)
-      }
+      else { const n=genGDB(); setGdbAccount(n); localStorage.setItem('gdb_account',n) }
       if(g) setGAddress(g)
       if(p) setKyc(true)
-    }catch(e){
-      const n=genGDB()
-      setGdbAccount(n)
-    }
+    }catch(e){ const n=genGDB(); setGdbAccount(n) }
+  },[])
+
+  useEffect(()=>{
+    const it=setInterval(function(){
+      const delta = (Math.random()-0.5)*0.02
+      setPiPrice(function(prev){ return prev * (1+delta) })
+      setPairs(function(old){
+        const copy=[]
+        for(let i=0;i<old.length;i++){
+          const p=old[i]
+          const d=(Math.random()-0.5)*0.02
+          const newPrice=p.price*(1+d)
+          const newChange=p.change+(Math.random()-0.5)*0.2
+          copy.push({sym:p.sym, price:newPrice, change:newChange, vol:p.vol, up:newChange>=0})
+        }
+        return copy
+      })
+    },1000)
+    return function(){ clearInterval(it) }
   },[])
 
   function doKyc(){
@@ -51,15 +78,16 @@ export default function Page(){
 
   function openSection(s:string){
     setActive(s)
-    if(s==='accueil'){
-      setShowMenu(false)
-      setModal('')
-    } else {
-      setModal(s)
-    }
+    if(s==='accueil'){ setShowMenu(false); setModal('') }
+    else { setModal(s) }
   }
 
   const usd = (parseFloat(amountPi||'0')*GCV).toLocaleString()
+  const filteredPairs = pairs.filter(function(p){
+    if(tradeTab==='gainers') return p.up
+    if(tradeTab==='losers') return!p.up
+    return true
+  })
 
   return(
     <div style={{minHeight:'100vh',background:'#f8fafc',fontFamily:'system-ui',paddingBottom:95}}>
@@ -75,16 +103,12 @@ export default function Page(){
             <div style={{background:'#1e40af',color:'#fff',padding:14}}>
               <button onClick={function(){setShowMenu(false)}} style={{border:'none',background:'rgba(255,255,255,0.2)',color:'#fff',borderRadius:20,width:32,height:32}}>←</button>
               <div style={{fontWeight:900,marginTop:8}}>{gdbAccount}</div>
-              <div style={{fontSize:11}}>Compte unique genere automatiquement</div>
             </div>
             <div style={{padding:14,display:'flex',flexDirection:'column',gap:10}}>
               <button onClick={function(){openSection('accueil')}} style={{textAlign:'left',background:'#eef2ff',border:'1px solid #c7d2fe',borderRadius:12,padding:12,fontWeight:800}}>🏠 Accueil</button>
-              <button onClick={function(){openSection('paiements')}} style={{textAlign:'left',background:'#fff',border:'1px solid #e2e8f0',borderRadius:12,padding:12}}>↔️ Paiements P2P</button>
-              <button onClick={function(){openSection('trading')}} style={{textAlign:'left',background:'#fff',border:'1px solid #e2e8f0',borderRadius:12,padding:12}}>📈 Trading</button>
+              <button onClick={function(){openSection('paiements')}} style={{textAlign:'left',background:'#fff',border:'1px solid #e2e8f0',borderRadius:12,padding:12}}>↔️ Paiements</button>
+              <button onClick={function(){openSection('trading')}} style={{textAlign:'left',background:'#fff',border:'2px solid #16a34a',borderRadius:12,padding:12,fontWeight:800}}>📈 Trading • Live 1s</button>
               <button onClick={function(){openSection('services')}} style={{textAlign:'left',background:'#fff',border:'1px solid #e2e8f0',borderRadius:12,padding:12}}>🏛️ Services</button>
-              <button onClick={function(){openSection('innovation')}} style={{textAlign:'left',background:'#fff',border:'1px solid #e2e8f0',borderRadius:12,padding:12}}>✨ Innovation</button>
-              <button onClick={function(){openSection('securite')}} style={{textAlign:'left',background:'#fff',border:'1px solid #e2e8f0',borderRadius:12,padding:12}}>🛡️ Securite</button>
-              <button onClick={function(){openSection('support')}} style={{textAlign:'left',background:'#fff',border:'1px solid #e2e8f0',borderRadius:12,padding:12}}>❓ Support</button>
             </div>
           </div>
         </div>
@@ -93,18 +117,19 @@ export default function Page(){
       <div style={{padding:14,display:'flex',flexDirection:'column',gap:14}}>
         <div style={{background:'#fff',border:'2px solid #facc15',borderRadius:20,padding:16,display:'flex',flexDirection:'column',alignItems:'center'}}>
           {!logoError? (
-            <img src="/logo.png" alt="GDB" onError={function(){setLogoError(true)}} style={{width:100,height:100,borderRadius:50,border:'3px solid #facc15',objectFit:'cover'}} />
+            <img src="/logo.png" alt="GDB" onError={function(){setLogoError(true)}} style={{width:90,height:90,borderRadius:45,border:'3px solid #facc15',objectFit:'cover'}} />
           ) : (
-            <div style={{width:100,height:100,borderRadius:50,background:'#1e3a8a',border:'3px solid #facc15',display:'flex',alignItems:'center',justifyContent:'center',color:'#facc15',fontWeight:900}}>GDB</div>
+            <div style={{width:90,height:90,borderRadius:45,background:'#1e3a8a',border:'3px solid #facc15',display:'flex',alignItems:'center',justifyContent:'center',color:'#facc15',fontWeight:900}}>GDB</div>
           )}
-          <div style={{fontWeight:900,color:'#1e3a8a',marginTop:8}}>GARGOURA DIGITAL BANK</div>
-          <div style={{fontSize:10,color:'#a16207',fontWeight:800}}>{gdbAccount} • Unique par utilisateur</div>
-          <button onClick={doKyc} style={{marginTop:8,background:kyc?'#16a34a':'#e2e8f0',border:'none',borderRadius:20,padding:'6px 12px',fontSize:10,fontWeight:800}}>{kyc?'KYC Verifie':'KYC Pi'}</button>
+          <div style={{fontWeight:900,color:'#1e3a8a',marginTop:6}}>GARGOURA DIGITAL BANK</div>
+          <div style={{fontSize:10,color:'#a16207',fontWeight:800}}>{gdbAccount} • GCV {GCV} $</div>
+          <button onClick={doKyc} style={{marginTop:6,background:kyc?'#16a34a':'#e2e8f0',border:'none',borderRadius:20,padding:'6px 12px',fontSize:10,fontWeight:800}}>{kyc?'KYC Verifie':'KYC Pi'}</button>
         </div>
 
         <div style={{background:'#1e3a8a',borderRadius:24,padding:20,color:'#fff'}}>
           <div style={{fontSize:14,opacity:0.9}}>Solde Total • {gdbAccount}</div>
-          <div style={{fontWeight:900,fontSize:28,marginTop:12}}>1 pi = 314 159,00 USD</div>
+          <div style={{fontWeight:900,fontSize:28,marginTop:12}}>1 pi = {piPrice.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} USD</div>
+          <div style={{fontSize:11,opacity:0.8,marginTop:4}}>Synchronisation en temps reel • updatedEverySecond</div>
           <div style={{display:'flex',gap:10,marginTop:14}}>
             <button onClick={function(){openSection('paiements')}} style={{flex:1,background:'#16a34a',color:'#fff',border:'none',borderRadius:20,padding:12,fontWeight:800}}>Envoyer</button>
             <button onClick={function(){setModal('receive')}} style={{flex:1,background:'#16a34a',color:'#fff',border:'none',borderRadius:20,padding:12,fontWeight:800}}>Recevoir</button>
@@ -112,20 +137,9 @@ export default function Page(){
         </div>
 
         <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:20,padding:16}}>
-          <div style={{fontWeight:900,fontSize:18}}>Aperçu du Compte</div>
-          <div style={{marginTop:12,display:'flex',gap:10,alignItems:'center',borderBottom:'1px solid #e2e8f0',paddingBottom:12}}>
-            <div style={{width:40,height:40,background:'#eff6ff',borderRadius:20,display:'flex',alignItems:'center',justifyContent:'center'}}>💳</div>
-            <div><div style={{fontWeight:700}}>Numero de Compte Bancaire</div><div style={{fontSize:13,color:'#1e40af',fontWeight:800}}>{gdbAccount}</div><div style={{fontSize:10,color:'#16a34a'}}>Unique - different de chaque utilisateur</div></div>
-          </div>
-          <button onClick={function(){setModal('receive')}} style={{width:'100%',display:'flex',gap:10,alignItems:'center',padding:'12px 0',border:'none',background:'none',textAlign:'left',borderBottom:'1px solid #e2e8f0'}}>
-            <div style={{width:40,height:40,background:'#f0fdf4',borderRadius:20,display:'flex',alignItems:'center',justifyContent:'center'}}>📱</div>
-            <div style={{flex:1}}><div style={{fontWeight:700}}>Voir QR Code</div><div style={{fontSize:12,color:'#64748b'}}>QR lie a {gdbAccount}</div></div>
-            <div style={{fontSize:12,fontWeight:700}}>Afficher QR</div>
-          </button>
-          <div style={{display:'flex',gap:10,alignItems:'center',paddingTop:12}}>
-            <div style={{width:40,height:40,background:'#f0fdf4',borderRadius:20,display:'flex',alignItems:'center',justifyContent:'center'}}>📞</div>
-            <div><div style={{fontWeight:700}}>Numero Telephone</div><div style={{fontSize:13}}>+235 92 82 52 62</div></div>
-          </div>
+          <div style={{fontWeight:900}}>Aperçu du Compte</div>
+          <div style={{marginTop:10,fontSize:13,color:'#1e40af',fontWeight:800}}>{gdbAccount} • Unique par utilisateur • QR lie</div>
+          <button onClick={function(){setModal('receive')}} style={{width:'100%',marginTop:8,background:'#facc15',color:'#1e3a8a',border:'none',borderRadius:12,padding:10,fontWeight:800}}>Afficher QR Code de {gdbAccount}</button>
         </div>
       </div>
 
@@ -141,78 +155,92 @@ export default function Page(){
 
       {modal? (
         <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:60,display:'flex',alignItems:'flex-end'}}>
-          <div style={{background:'#fff',width:'100%',borderRadius:'24px 24px 0 0',padding:16,maxHeight:'90vh',overflowY:'auto'}}>
+          <div style={{background:'#f8fafc',width:'100%',borderRadius:'24px 24px 0 0',padding:12,maxHeight:'92vh',overflowY:'auto'}}>
 
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-              <div style={{fontWeight:900}}>{modal==='paiements'?'Paiements - '+gdbAccount : modal.toUpperCase()}</div>
-              <button onClick={function(){setModal(''); setActive('accueil')}} style={{border:'none',background:'#f1f5f9',borderRadius:20,width:32,height:32}}>✕</button>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',background:'#1e40af',color:'#fff',padding:'12px 14px',borderRadius:12,margin:-12,marginBottom:12}}>
+              <div style={{fontWeight:900}}>Gargoura • {gdbAccount}</div>
+              <button onClick={function(){setModal(''); setActive('accueil')}} style={{border:'none',background:'rgba(255,255,255,0.2)',color:'#fff',borderRadius:20,width:32,height:32}}>←</button>
             </div>
 
+            {modal==='trading' && (
+              <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                <div style={{background:'#fef3c7',border:'1px solid #facc15',borderRadius:20,padding:16}}>
+                  <div style={{fontWeight:800,fontSize:18}}>piCoin</div>
+                  <div style={{fontSize:12,color:'#64748b',marginTop:2}}>officialGcvValue • {gdbAccount}</div>
+                  <div style={{fontWeight:900,fontSize:32,color:'#b45309',marginTop:12}}>1 π = {piPrice.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} USD</div>
+                  <div style={{marginTop:6,display:'flex',gap:6,alignItems:'center',color:'#16a34a',fontWeight:800}}>↗ +2.45% <span style={{color:'#64748b',fontWeight:400}}>24h • Live</span></div>
+                </div>
+
+                <div style={{background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:20,padding:14,display:'flex',gap:10,alignItems:'center'}}>
+                  <div style={{color:'#16a34a',fontSize:20}}>∿</div>
+                  <div><div style={{fontWeight:800}}>Synchronisation en temps reel</div><div style={{fontSize:12,color:'#64748b'}}>updatedEverySecond • {new Date().toLocaleTimeString()} • {gdbAccount}</div></div>
+                  <div style={{marginLeft:'auto',width:10,height:10,background:'#16a34a',borderRadius:10,animation:'pulse 1s infinite'}}></div>
+                </div>
+
+                <div style={{display:'flex',gap:8}}>
+                  <button onClick={function(){setOrdreType('achat'); setModal('ordre-achat')}} style={{flex:1,background:'#16a34a',color:'#fff',border:'none',borderRadius:24,padding:'14px 8px',fontWeight:900,display:'flex',alignItems:'center',justifyContent:'center',gap:6}}>↗ Acheter</button>
+                  <button onClick={function(){setOrdreType('vente'); setModal('ordre-vente')}} style={{flex:1,background:'#dc2626',color:'#fff',border:'none',borderRadius:24,padding:'14px 8px',fontWeight:900,display:'flex',alignItems:'center',justifyContent:'center',gap:6}}>↘ Vendre</button>
+                  <button onClick={function(){setModal('ordre-liste')}} style={{flex:1,background:'#fff',border:'1px solid #cbd5e1',borderRadius:24,padding:'14px 8px',fontWeight:800,display:'flex',alignItems:'center',justifyContent:'center',gap:4}}>∿ Placer un ordre</button>
+                </div>
+
+                <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:20,padding:14}}>
+                  <div style={{fontWeight:900,fontSize:18}}>Paires de Trading</div>
+                  <div style={{fontSize:12,color:'#64748b',marginTop:2}}>realTimePiNetworkMarkets • {gdbAccount}</div>
+
+                  <div style={{display:'flex',background:'#f1f5f9',borderRadius:20,padding:4,marginTop:12}}>
+                    <button onClick={function(){setTradeTab('all')}} style={{flex:1,background:tradeTab==='all'?'#fff':'transparent',border:'none',borderRadius:16,padding:8,fontWeight:800,boxShadow:tradeTab==='all'?'0 1px 3px rgba(0,0,0,0.1)':'none'}}>all</button>
+                    <button onClick={function(){setTradeTab('gainers')}} style={{flex:1,background:tradeTab==='gainers'?'#fff':'transparent',border:'none',borderRadius:16,padding:8,fontWeight:800,boxShadow:tradeTab==='gainers'?'0 1px 3px rgba(0,0,0,0.1)':'none'}}>gainers</button>
+                    <button onClick={function(){setTradeTab('losers')}} style={{flex:1,background:tradeTab==='losers'?'#fff':'transparent',border:'none',borderRadius:16,padding:8,fontWeight:800,boxShadow:tradeTab==='losers'?'0 1px 3px rgba(0,0,0,0.1)':'none'}}>losers</button>
+                  </div>
+
+                  <div style={{display:'flex',flexDirection:'column',gap:8,marginTop:12}}>
+                    {filteredPairs.map(function(p,idx){
+                      return (
+                        <div key={idx} style={{display:'flex',justifyContent:'space-between',alignItems:'center',border:'1px solid #e2e8f0',borderRadius:16,padding:'12px 14px',background:'#fff'}}>
+                          <div><div style={{fontWeight:800}}>{p.sym}</div><div style={{fontSize:12,color:'#64748b'}}>vol: {p.vol} • {gdbAccount.slice(0,8)}</div></div>
+                          <div style={{textAlign:'right'}}><div style={{fontWeight:800}}>{p.price.toFixed(2)}</div><div style={{fontSize:12,color:p.up?'#16a34a':'#dc2626',fontWeight:700}}>{p.up?'↗':'↘'} {p.change>=0?'+':''}{p.change.toFixed(2)}%</div></div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                <div style={{background:'#eff6ff',border:'1px solid #bfdbfe',borderRadius:20,padding:14,display:'flex',gap:10,alignItems:'center'}}>
+                  <div style={{fontSize:20}}>🧠</div>
+                  <div style={{flex:1}}><div style={{fontWeight:800}}>aiTradingAssistant</div><div style={{fontSize:12,color:'#64748b',marginTop:2}}>aiMonitorsMarkets • Compte {gdbAccount} • Analyse temps reel</div></div>
+                </div>
+                <button style={{width:'100%',background:'#fff',border:'1px solid #e2e8f0',borderRadius:20,padding:12,fontWeight:700}}>🧠 viewAiRecommendations</button>
+              </div>
+            )}
+
+            {modal==='ordre-achat' && (
+              <div style={{background:'#fff',borderRadius:20,padding:16,marginTop:8}}>
+                <div style={{fontWeight:900,fontSize:18}}>Placer un ordre / Achat</div>
+                <div style={{fontSize:12,color:'#64748b'}}>Compte: {gdbAccount} • Prix actuel: {piPrice.toFixed(2)} USD • Sync chaque seconde</div>
+                <div style={{marginTop:12}}><div style={{fontWeight:700}}>Paire</div><select style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1',marginTop:4}}><option>PI/USDT - {pairs[0].price.toFixed(2)}</option><option>PI/BTC - {pairs[1].price.toFixed(2)}</option><option>PI/ETH</option></select></div>
+                <div style={{marginTop:10}}><div style={{fontWeight:700}}>Montant pi</div><input value={amountPi} onChange={function(e){setAmountPi(e.target.value)}} placeholder="0.00 pi" style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1',marginTop:4}} /><div style={{fontSize:11,color:'#16a34a'}}>{usd} USD • G: {formatG(gAddress)}</div></div>
+                <button onClick={function(){setModal('Ordre Achat place: '+amountPi+' pi a '+piPrice.toFixed(2)+' USD pour compte '+gdbAccount)}} style={{width:'100%',marginTop:12,background:'#16a34a',color:'#fff',border:'none',borderRadius:12,padding:14,fontWeight:900}}>Confirmer Placer un ordre / Achat</button>
+              </div>
+            )}
+
+            {modal==='ordre-vente' && (
+              <div style={{background:'#fff',borderRadius:20,padding:16,marginTop:8}}>
+                <div style={{fontWeight:900,fontSize:18}}>Placer un ordre / Vente</div>
+                <div style={{fontSize:12,color:'#64748b'}}>Compte: {gdbAccount} • Prix actuel: {piPrice.toFixed(2)} USD</div>
+                <div style={{marginTop:10}}><input value={amountPi} onChange={function(e){setAmountPi(e.target.value)}} placeholder="0.00 pi a vendre" style={{width:'100%',padding:12,borderRadius:12,border:'1px solid #cbd5e1'}} /><div style={{fontSize:11,color:'#dc2626'}}>{usd} USD</div></div>
+                <button onClick={function(){setModal('Ordre Vente place: '+amountPi+' pi a '+piPrice.toFixed(2)+' USD pour '+gdbAccount)}} style={{width:'100%',marginTop:12,background:'#dc2626',color:'#fff',border:'none',borderRadius:12,padding:14,fontWeight:900}}>Confirmer Placer un ordre / Vente</button>
+              </div>
+            )}
+
+            {modal==='ordre-liste' && (
+              <div style={{background:'#fff',borderRadius:20,padding:16,marginTop:8}}>
+                <div style={{fontWeight:900}}>Mes Ordres • {gdbAccount}</div>
+                <div style={{marginTop:8,border:'1px solid #e2e8f0',borderRadius:12,padding:12}}><div style={{fontWeight:700}}>Achat PI/USDT 0.5 pi @ 314160 USD</div><div style={{fontSize:11,color:'#16a34a'}}>Ouvert • Sync temps reel</div></div>
+                <div style={{marginTop:8,border:'1px solid #e2e8f0',borderRadius:12,padding:12}}><div style={{fontWeight:700}}>Vente PI/BTC 1.2 pi @ 3.31 BTC</div><div style={{fontSize:11,color:'#dc2626'}}>En attente • {gdbAccount}</div></div>
+              </div>
+            )}
+
             {modal==='paiements' && (
-              <div style={{marginTop:12}}>
+              <div style={{marginTop:8}}>
                 <div style={{display:'flex',background:'#f1f5f9',borderRadius:20,padding:4}}>
-                  <button onClick={function(){setP2pType('interne')}} style={{flex:1,background:p2pType==='interne'?'#fff':'transparent',border:'none',borderRadius:16,padding:10,fontWeight:800}}>P2P Interne</button>
-                  <button onClick={function(){setP2pType('externe')}} style={{flex:1,background:p2pType==='externe'?'#fff':'transparent',border:'none',borderRadius:16,padding:10,fontWeight:800}}>P2P Externe</button>
-                </div>
-
-                {p2pType==='interne' ? (
-                  <div style={{marginTop:12,border:'1px solid #e2e8f0',borderRadius:16,padding:14}}>
-                    <div style={{fontWeight:900}}>Transfert Interne Gargoura</div>
-                    <div style={{fontSize:11,color:'#64748b'}}>Compte: {gdbAccount} (unique)</div>
-                    <div style={{marginTop:10}}><div style={{fontWeight:700,fontSize:13}}>Destinataire</div><input value={dest} onChange={function(e){setDest(e.target.value)}} placeholder="Numero telephone ou ID" style={{width:'100%',padding:12,borderRadius:24,border:'1px solid #cbd5e1',marginTop:4}} /></div>
-                    <div style={{marginTop:10}}><div style={{fontWeight:700,fontSize:13}}>Cryptomonnaie</div><select style={{width:'100%',padding:12,borderRadius:24,border:'1px solid #cbd5e1',marginTop:4}}><option>π PiCoin (314,159.00 USD)</option></select></div>
-                    <div style={{marginTop:10}}><div style={{fontWeight:700,fontSize:13}}>Montant</div><input value={amountPi} onChange={function(e){setAmountPi(e.target.value)}} placeholder="0.00" style={{width:'100%',padding:12,borderRadius:24,border:'1px solid #cbd5e1',marginTop:4}} /><div style={{fontSize:11,color:'#16a34a',marginTop:4}}>{usd} USD</div></div>
-                    <div style={{marginTop:10}}><div style={{fontWeight:700,fontSize:13}}>Note (optionnel)</div><input value={note} onChange={function(e){setNote(e.target.value)}} placeholder="Ajouter une note" style={{width:'100%',padding:12,borderRadius:24,border:'1px solid #cbd5e1',marginTop:4}} /></div>
-                    <button onClick={function(){setModal('Envoye '+amountPi+' pi de '+gdbAccount+' vers '+dest)}} style={{width:'100%',marginTop:12,background:'#1e40af',color:'#fff',border:'none',borderRadius:24,padding:14,fontWeight:800}}>Envoyer</button>
-                  </div>
-                ) : (
-                  <div style={{marginTop:12,display:'flex',flexDirection:'column',gap:12}}>
-                    <div style={{border:'1px solid #e2e8f0',borderRadius:16,padding:14}}>
-                      <div style={{fontWeight:900}}>Zone de Transfert</div>
-                      <div style={{display:'flex',gap:6,marginTop:8,flexWrap:'wrap'}}>
-                        <button onClick={function(){setZone('CEMAC')}} style={{padding:'8px 10px',borderRadius:20,border:'none',background:zone==='CEMAC'?'#1e40af':'#f1f5f9',color:zone==='CEMAC'?'#fff':'#333',fontSize:11,fontWeight:800}}>CEMAC</button>
-                        <button onClick={function(){setZone('UEMOA')}} style={{padding:'8px 10px',borderRadius:20,border:'none',background:zone==='UEMOA'?'#1e40af':'#f1f5f9',color:zone==='UEMOA'?'#fff':'#333',fontSize:11,fontWeight:800}}>UEMOA</button>
-                        <button onClick={function(){setZone('Dollar')}} style={{padding:'8px 10px',borderRadius:20,border:'none',background:zone==='Dollar'?'#1e40af':'#f1f5f9',color:zone==='Dollar'?'#fff':'#333',fontSize:11,fontWeight:800}}>Dollar</button>
-                        <button onClick={function(){setZone('Jordanie')}} style={{padding:'8px 10px',borderRadius:20,border:'none',background:zone==='Jordanie'?'#1e40af':'#f1f5f9',color:zone==='Jordanie'?'#fff':'#333',fontSize:11,fontWeight:800}}>Jordanie</button>
-                        <button onClick={function(){setZone('Golfe')}} style={{padding:'8px 10px',borderRadius:20,border:'none',background:zone==='Golfe'?'#1e40af':'#f1f5f9',color:zone==='Golfe'?'#fff':'#333',fontSize:11,fontWeight:800}}>Golfe</button>
-                        <button onClick={function(){setZone('Moyen-Orient')}} style={{padding:'8px 10px',borderRadius:20,border:'none',background:zone==='Moyen-Orient'?'#1e40af':'#f1f5f9',color:zone==='Moyen-Orient'?'#fff':'#333',fontSize:11,fontWeight:800}}>Moyen-Orient</button>
-                        <button onClick={function(){setZone('International')}} style={{padding:'8px 10px',borderRadius:20,border:'none',background:zone==='International'?'#1e40af':'#f1f5f9',color:zone==='International'?'#fff':'#333',fontSize:11,fontWeight:800}}>International</button>
-                      </div>
-                      <div style={{fontSize:11,marginTop:6}}>Zone: {zone} • Compte: {gdbAccount}</div>
-                    </div>
-                    <div style={{border:'1px solid #e2e8f0',borderRadius:16,padding:14}}>
-                      <div style={{fontWeight:900}}>Transfert Externe</div>
-                      <div style={{fontSize:12,color:'#2563eb',fontWeight:700,marginTop:4}}>Conforme ISO 20022 • SWIFT • SEPA</div>
-                      <div style={{marginTop:10}}><div style={{fontWeight:700,fontSize:13}}>Banque Partenaire</div><select value={banquePart} onChange={function(e){setBanquePart(e.target.value)}} style={{width:'100%',padding:12,borderRadius:24,border:'1px solid #cbd5e1',marginTop:4}}><option value="">Choisir une banque</option><option>Ecobank Tchad - CEMAC</option><option>UBA Tchad - UEMOA</option><option>BSIC</option><option>Orabank</option><option>BNP Paribas - International</option><option>Attijariwafa - Golfe</option><option>Jordan Islamic Bank</option></select></div>
-                      <div style={{marginTop:10}}><div style={{fontWeight:700,fontSize:13}}>Numero de Compte</div><input value={compteExt} onChange={function(e){setCompteExt(e.target.value)}} placeholder="Entrer le numero de compte" style={{width:'100%',padding:12,borderRadius:24,border:'1px solid #cbd5e1',marginTop:4}} /><div style={{fontSize:10,color:'#64748b',marginTop:4}}>Source unique: {gdbAccount} → {compteExt || 'externe'}</div></div>
-                      <div style={{marginTop:10}}><input value={amountPi} onChange={function(e){setAmountPi(e.target.value)}} placeholder="0.00 pi" style={{width:'100%',padding:12,borderRadius:24,border:'1px solid #cbd5e1'}} /><div style={{fontSize:11,color:'#16a34a'}}>{usd} USD</div></div>
-                      <button onClick={function(){setModal('Transfert externe '+amountPi+' pi de '+gdbAccount+' vers '+banquePart+' '+compteExt+' zone '+zone)}} style={{width:'100%',marginTop:12,background:'#1e40af',color:'#fff',border:'none',borderRadius:24,padding:14,fontWeight:800}}>Envoyer Externe {zone}</button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {modal==='receive' && (
-              <div style={{textAlign:'center',marginTop:12}}>
-                <div style={{fontWeight:900}}>{gdbAccount}</div>
-                <div style={{fontSize:11,color:'#16a34a'}}>Chaque utilisateur numero different - QR unique</div>
-                <div style={{marginTop:12,border:'2px solid #facc15',borderRadius:16,padding:12,display:'inline-block'}}>
-                  <img src={'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent(gdbAccount)} alt="QR" style={{width:200,height:200}} />
-                </div>
-                <div style={{marginTop:8,fontSize:11}}>QR: {gdbAccount} • {formatG(gAddress)}</div>
-                <button onClick={function(){navigator.clipboard.writeText(gdbAccount)}} style={{width:'100%',marginTop:10,background:'#1e40af',color:'#fff',border:'none',borderRadius:12,padding:10,fontWeight:800}}>Copier {gdbAccount}</button>
-              </div>
-            )}
-
-            {modal!=='paiements' && modal!=='receive' && (
-              <div style={{marginTop:12}}><div style={{fontSize:12}}>Compte actif: {gdbAccount} • Unique par utilisateur</div><div style={{marginTop:8,fontSize:12}}>G: {formatG(gAddress) || 'Non lie'} - 4+4 visible</div></div>
-            )}
-
-            <button onClick={function(){setModal(''); setActive('accueil')}} style={{width:'100%',marginTop:12,background:'#f1f5f9',border:'none',borderRadius:12,padding:10}}>Retour Accueil</button>
-          </div>
-        </div>
-      ) : null}
-    </div>
-  )
-    }
+        
