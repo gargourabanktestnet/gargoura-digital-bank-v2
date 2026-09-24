@@ -1,6 +1,5 @@
 'use client'
 
-// COMPOSANT 1 - TON DESIGN PREFERE BLEU
 function SoldeGCV(){
   return(
     <div style={{display:'flex',flexDirection:'column',gap:12}}>
@@ -26,7 +25,6 @@ function SoldeGCV(){
   )
 }
 
-// COMPOSANT 2 - APERCU COMPTE
 function ApercuCompte(){
   return(
     <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:18,padding:14}}>
@@ -43,11 +41,65 @@ function ApercuCompte(){
   )
 }
 
-export default function Page(){
+function Fonctionnalites(){
+  const items = [
+    {label:'Transférer', icon:'⇄', color:'#3b82f6'},
+    {label:'Virement Bancaire', icon:'💳', color:'#3b82f6'},
+    {label:'Pi DEX', icon:'↗', color:'#a855f7'},
+    {label:'Convertir', icon:'↻', color:'#22c55e'},
+    {label:'Trading', icon:'📈', color:'#22c55e'},
+    {label:'aiAutomation', icon:'✨', color:'#a855f7'},
+    {label:'blockchain', icon:'⧉', color:'#3b82f6'},
+    {label:'Shopping', icon:'🛍️', color:'#ec4899'},
+    {label:'Portefeuilles', icon:'👛', color:'#14b8a6'},
+    {label:'Automobile', icon:'🚗', color:'#3b82f6'},
+    {label:'Agrégation de Comptes', icon:'⬙', color:'#3b82f6'},
+    {label:'Gestion Financière', icon:'📊', color:'#22c55e'},
+  ]
   return(
-    <div style={{minHeight:'100vh',background:'#f1f5f9',padding:14,display:'flex',flexDirection:'column',gap:16,fontFamily:'system-ui'}}>
-      <SoldeGCV />
-      <ApercuCompte />
+    <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:20,padding:14}}>
+      <div style={{fontWeight:900,fontSize:17,marginBottom:14}}>Fonctionnalités Courantes</div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10}}>
+        {items.map((it,i)=>(
+          <div key={i} style={{border:'1px solid #e2e8f0',borderRadius:14,padding:'10px 4px',textAlign:'center',background:'#fff'}}>
+            <div style={{fontSize:18,color:it.color}}>{it.icon}</div>
+            <div style={{fontSize:9,fontWeight:700,marginTop:4,lineHeight:1.2,color:'#0f172a'}}>{it.label}</div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
+
+function AssistantIA(){
+  return(
+    <div style={{background:'#f3e8ff',borderRadius:20,padding:14,border:'1px solid #e9d5ff'}}>
+      <div style={{background:'linear-gradient(90deg,#a855f7,#3b82f6)',borderRadius:20,padding:12,textAlign:'center',color:'#fff',fontWeight:800,display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+        🤖 Assistant IA
+      </div>
+    </div>
+  )
+}
+
+export default function Page(){
+  return(
+    <div style={{minHeight:'100vh',background:'#f1f5f9',padding:14,display:'flex',flexDirection:'column',gap:16,fontFamily:'system-ui',paddingBottom:90}}>
+      <SoldeGCV />
+      <ApercuCompte />
+      <Fonctionnalites />
+      <AssistantIA />
+      <div style={{background:'#fff',borderRadius:16,padding:14,border:'1px solid #e2e8f0'}}>
+        <div style={{fontWeight:900,fontSize:16}}>Comptes Bancaires</div>
+      </div>
+
+      {/* MENU BAS */}
+      <div style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',justifyContent:'space-around',padding:'8px 0'}}>
+        {['Accueil','Paiements','Trading','Services','Innovation','Sécurité','Support'].map((t,i)=>(
+          <div key={t} style={{textAlign:'center',fontSize:9,fontWeight:i===0?800:500,color:i===0?'#1e40af':'#64748b'}}>
+            <div style={{fontSize:16}}>{i===0?'🏠':i===1?'⇄':i===2?'📈':i===3?'🏛️':i===4?'✨':i===5?'🛡️':'❓'}</div>{t}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+                      }
