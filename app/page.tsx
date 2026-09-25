@@ -2,6 +2,7 @@
 'use client'
 import {useState,useEffect} from 'react'
 import Convertir from '../components/Convertir'
+import Trading from ' ../components/Trading'
 function genGDB(){return 'GDB-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000)}
 export default function Page(){
 const [gdb,setGdb]=useState('GDB-2026-000000')
