@@ -5,6 +5,7 @@ import Convertir from '../components/Convertir'
 import Trading from '../components/Trading'
 import AiAutomation from '../components/AiAutomation'
 import Blockchain from '../components/Blockchain'
+import Shopping from '../components/Shopping'
 function genGDB(){return 'GDB-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000)}
 export default function Page(){
 const [gdb,setGdb]=useState('GDB-2026-000000')
@@ -78,6 +79,7 @@ return(
 {m==='trading' && (<Trading gdb={gdb} />)}
   {m==='aiAutomation' && (<AiAutomation gdb={gdb} />)}
   {m==='blockchain' && (<Blockchain gdb={gdb} />)}
+  {m==='shopping' && (<Shopping gdb={gdb} />)}
 {m==='receive' && (<div style={{textAlign:'center',background:'#fff',borderRadius:16,padding:14,marginTop:10}}><div style={{fontWeight:900}}>{gdb}</div><img src={'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent(gdb)} alt="QR" style={{width:180,height:180,marginTop:10,border:'2px solid #facc15',borderRadius:12}} /></div>)}
 {m!=='transferer' && m!=='virement' && m!=='pidex' && m!=='convertir' && m!=='trading' && m!=='receive' && (<div style={{background:'#fff',borderRadius:12,padding:12,marginTop:10}}><div style={{fontWeight:800}}>{m} • {gdb}</div><div style={{fontSize:11,color:'#64748b',marginTop:4}}>Module en construction - GDB unique {gdb} • PiCoin 314159 USD ref - Interopérable ISO20022</div></div>)}
 <button onClick={function(){setM(''); setA('accueil')}} style={{width:'100%',marginTop:10,background:'#f1f5f9',border:'none',borderRadius:12,padding:10}}>Retour Accueil • {gdb}</button>
