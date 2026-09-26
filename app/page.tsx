@@ -10,8 +10,8 @@ import Shopping from '../components/Shopping'
 import Automobile from '../components/Automobile'
 import Agregation from '../components/Agregation'
 import Gestion from '../components/Gestion'
-import HamburgerMenu from ''@/components/HamburgerMenu'
-import LanguageGlobe from ''@/components/LanguageGlobe'
+import HamburgerMenu from ''@/components/HamburgerMenu''
+import LanguageGlobe from ''@/components/LanguageGlobe''
 function genGDB(){return 'GDB-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000)}
 export default function Page(){
 const [gdb,setGdb]=useState('GDB-2026-000000')
