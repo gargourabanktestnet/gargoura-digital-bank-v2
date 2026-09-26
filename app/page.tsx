@@ -1,6 +1,7 @@
 // @ts-nocheck
 'use client'
 import {useState,useEffect} from 'react'
+import {Language} from ''@lib/langs''
 import Convertir from '../components/Convertir'
 import Trading from '../components/Trading'
 import AiAutomation from '../components/AiAutomation'
@@ -9,8 +10,8 @@ import Shopping from '../components/Shopping'
 import Automobile from '../components/Automobile'
 import Agregation from '../components/Agregation'
 import Gestion from '../components/Gestion'
-import HamburgerMenu '../components/HamburgerMenu'
-import LanguageGlobe '../components/LanguageGlobe'
+import HamburgerMenu from ''@/components/HamburgerMenu'
+import LanguageGlobe from ''@/components/LanguageGlobe'
 function genGDB(){return 'GDB-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000)}
 export default function Page(){
 const [gdb,setGdb]=useState('GDB-2026-000000')
@@ -56,6 +57,9 @@ const pools=[{p:'π/USDT',q:'2.4M',y:'12.5%'},{p:'π/BTC',q:'1.8M',y:'18.2%'},{p
 useEffect(function(){try{var x=localStorage.getItem('gdb_account'); if(x) setGdb(x); else{var n=genGDB(); setGdb(n); localStorage.setItem('gdb_account',n)}}catch(e){setGdb(genGDB())}},[])
 function open(s){setA(s); if(s==='accueil') setM(''); else setM(s)}
 return(
+  <HamburgerMenu />
+<LanguageGlobe current={language} onChange={setLanguage} />
+<div style={{minHeight:'100vh',background...
 <div style={{minHeight:'100vh',background:'#f8fafc',fontFamily:'system-ui',paddingBottom:90}}>
 <div style={{background:'#1e40af',color:'#fff',padding:'12px 14px',position:'sticky',top:0,zIndex:30}}><div style={{fontWeight:900}}>Gargoura • {gdb}</div></div>
 <div style={{padding:14,display:'flex',flexDirection:'column',gap:12}}>
