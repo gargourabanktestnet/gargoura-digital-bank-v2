@@ -60,7 +60,7 @@ const pools=[{p:'π/USDT',q:'2.4M',y:'12.5%'},{p:'π/BTC',q:'1.8M',y:'18.2%'},{p
 useEffect(function(){try{var x=localStorage.getItem('gdb_account'); if(x) setGdb(x); else{var n=genGDB(); setGdb(n); localStorage.setItem('gdb_account',n)}}catch(e){setGdb(genGDB())}},[])
 function open(s){setA(s); if(s==='accueil') setM(''); else setM(s)}
 return(
-  <HamburgerMenu />
+<HamburgerMenu />
 <LanguageGlobe current={language} onChange={setLanguage} />
 <div style={{minHeight:'100vh',background...
 <div style={{minHeight:'100vh',background:'#f8fafc',fontFamily:'system-ui',paddingBottom:90}}>
