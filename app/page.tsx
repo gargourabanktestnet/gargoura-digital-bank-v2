@@ -1,7 +1,7 @@
 // @ts-nocheck
 'use client'
 import {useState,useEffect} from 'react'
-import {Language} from ''@lib/langs''
+import {Language,langs} from '../lib/lang'
 import Convertir from '../components/Convertir'
 import Trading from '../components/Trading'
 import AiAutomation from '../components/AiAutomation'
