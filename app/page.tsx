@@ -1,20 +1,20 @@
 // @ts-nocheck
 'use client'
-import {useState,useEffect} from 'react'
-import {langs} from '../lib/lang'
-import Agregation from '../components/Agregation"
-import AiAutomation from '../components/AiAutomation'
-import ApercuCompte from '../components/ApercuCompte'
-import Automobile from '../components/Automobile'
-import Blockchain from '../components/Blockchain'
-import Convertir from '../components/Convertir'
-import Gestion from '../components/Gestion'
-import HamburgerMenu from '../components/HamburgerMenu'
-import LanguageGlobe from '../components/LanguageGlobe'
-import Portefeuille from '../components/Portefeuille'
-import Shopping from '../components/Shopping'
-import SoldeGCV from '../components/SoldeGCV'
-import Trading from '../components/Trading'
+import { useState,useEffect } from 'react'
+import { langs } from "../lib/lang"
+import Agregation from "../components/Agregation"
+import AiAutomation from "../components/AiAutomation"
+import ApercuCompte from "../components/ApercuCompte"
+import Automobile from "../components/Automobile"
+import Blockchain from "../components/Blockchain"
+import Convertir from "../components/Convertir"
+import Gestion from "../components/Gestion"
+import HamburgerMenu from "../components/HamburgerMenu"
+import LanguageGlobe from "../components/LanguageGlobe"
+import Portefeuille from "../components/Portefeuille"
+import Shopping from "../components/Shopping"
+import SoldeGCV from "../components/SoldeGCV"
+import Trading from "../components/Trading"
 function genGDB(){return 'GDB-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000)}
 export default function Page(){
 const [gdb,setGdb]=useState('GDB-2026-000000')
@@ -62,7 +62,7 @@ const pools=[{p:'π/USDT',q:'2.4M',y:'12.5%'},{p:'π/BTC',q:'1.8M',y:'18.2%'},{p
 useEffect(function(){try{var x=localStorage.getItem('gdb_account'); if(x) setGdb(x); else{var n=genGDB(); setGdb(n); localStorage.setItem('gdb_account',n)}}catch(e){setGdb(genGDB())}},[])
 function open(s){setA(s); if(s==='accueil') setM(''); else setM(s)}
 return(
-<HamburgerMenu />
+<Language />
 <LanguageGlobe current={language} onChange={setLanguage} />
 <div style={{minHeight:'100vh',background...
 <div style={{minHeight:'100vh',background:'#f8fafc',fontFamily:'system-ui',paddingBottom:90}}>
