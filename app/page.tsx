@@ -32,17 +32,19 @@ const [toT,setToT]=useState('USDT')
 const [dAmt,setDAmt]=useState('')
 const [logoErr,setLogoErr]=useState(false)
 const funcs=[
+{id:'apercuCompte',l:'Aperçu Compte',i:'👁️'},
+{id:'portefeuille',l:'Portefeuille',i:'👛'},
+{id:'soldeGCV',l:'Solde GCV',i:'💰'},
 {id:'transferer',l:'Transférer',i:'↔️'},
 {id:'virement',l:'Virement Bancaire',i:'💳'},
 {id:'pidex',l:'Pi DEX',i:'📈'},
 {id:'convertir',l:'Convertir',i:'🔄'},
 {id:'trading',l:'Trading',i:'📊'},
-{id:'aiAutomation',l:'aiAutomation',i:'✨'},
-{id:'blockchain',l:'blockchain',i:'⛓️'},
+{id:'aiAutomation',l:'Ai Automation',i:'✨'},
+{id:'blockchain',l:'Blockchain',i:'⛓️'},
 {id:'shopping',l:'Shopping',i:'🛍️'},
-{id:'portefeuilles',l:'Portefeuilles',i:'👛'},
 {id:'automobile',l:'Automobile',i:'🚗'},
-{id:'agregation',l:'Agrégation de Comptes',i:'🗂️'},
+{id:'agregation',l:'Agrégation de Comptes',i:'🔗'},
 {id:'gestion',l:'Gestion Financière',i:'📊'},
 ]
 const banks={
