@@ -18,7 +18,7 @@ import Trading from '../components/Trading'
 function genGDB(){return 'GDB-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000)}
 export default function Page(){
 const [gdb,setGdb]=useState('GDB-2026-000000')
-const [m,setM]=useState('')
+const [m,setM]=usestate ('')
 const [a,setA]=useState('accueil')
 const [amt,setAmt]=useState('')
 const [dest,setDest]=useState('')
@@ -88,13 +88,18 @@ return(
 {m==='virement' && (<div style={{background:'#fff',borderRadius:16,padding:12,marginTop:10}}><div style={{fontWeight:900}}>Virement Bancaire • ISO20022 SWIFT SEPA</div><div style={{display:'flex',flexDirection:'column',gap:4,marginTop:8,border:'1px solid #e2e8f0',borderRadius:12,padding:6}}>{Object.keys(banks).map(function(z){return (<button key={z} onClick={function(){setZone(z); setBank('')}} style={{padding:'8px 10px',border:'none',borderRadius:8,background:zone===z?'#16a34a':'#f8fafc',color:zone===z?'#fff':'#334155',textAlign:'left',fontSize:12}}>- {z}</button>)})}</div><div style={{border:'1px solid #cbd5e1',borderRadius:12,marginTop:8,maxHeight:80,overflowY:'auto'}}>{(banks[zone]||[]).map(function(b){return (<button key={b} onClick={function(){setBank(b)}} style={{width:'100%',padding:'6px 10px',border:'none',background:bank===b?'#dcfce7':'#fff',textAlign:'left',fontSize:11}}>{b}</button>)})}</div><input value={cExt} onChange={function(e){setCExt(e.target.value)}} placeholder="Compte bénéficiaire" style={{width:'100%',padding:10,borderRadius:12,border:'1px solid #cbd5e1',marginTop:8}} /><input value={amt} onChange={function(e){setAmt(e.target.value)}} placeholder="0.00" style={{width:'100%',padding:10,borderRadius:12,border:'2px solid #16a34a',marginTop:8,fontWeight:800}} /><button onClick={function(){setM('Virement '+amt+' de '+gdb+' vers '+bank)}} style={{width:'100%',marginTop:8,background:'#16a34a',color:'#fff',border:'none',borderRadius:12,padding:12,fontWeight:900}}>Envoyer Virement</button></div>)}
 {m==='pidex' && (<div style={{background:'#fff',borderRadius:16,padding:12,marginTop:10}}><div style={{fontWeight:900}}>Pi DEX & AMM • {gdb.slice(0,12)} • 314,159 USD ref</div><div style={{background:'#faf5ff',border:'1px solid #e9d5ff',borderRadius:12,padding:10,marginTop:10}}><div style={{display:'flex',gap:6}}><select value={fromT} onChange={function(e){setFromT(e.target.value)}} style={{padding:8,borderRadius:10,border:'1px solid #cbd5e1',fontWeight:800}}>{toks.map(function(t){return (<option key={t} value={t}>{t}</option>)})}</select><input value={dAmt} onChange={function(e){setDAmt(e.target.value)}} placeholder="0.00" style={{flex:1,padding:10,borderRadius:10,border:'1px solid #cbd5e1',fontWeight:800}} /></div><div style={{textAlign:'center',margin:'6px 0'}}>⇅</div><div style={{display:'flex',gap:6}}><select value={toT} onChange={function(e){setToT(e.target.value)}} style={{padding:8,borderRadius:10,border:'1px solid #cbd5e1',fontWeight:800}}>{toks.map(function(t){return (<option key={t} value={t}>{t}</option>)})}</select><input value={dAmt? (parseFloat(dAmt)*2.5).toFixed(2):''} readOnly placeholder="Estimé" style={{flex:1,padding:10,borderRadius:10,border:'1px solid #e2e8f0',background:'#f8fafc'}} /></div></div><button onClick={function(){setM('Swap '+dAmt+' '+fromT+' -> '+toT+' de '+gdb)}} style={{width:'100%',marginTop:10,background:'#a855f7',color:'#fff',border:'none',borderRadius:12,padding:12,fontWeight:900}}>Swap via AMM {fromT}→{toT}</button><div style={{marginTop:10}}>{pools.map(function(p){return (<div key={p.p} style={{display:'flex',justifyContent:'space-between',padding:'8px 10px',border:'1px solid #e2e8f0',borderRadius:10,marginTop:4,fontSize:11}}><div style={{fontWeight:800}}>{p.p}</div><div>Liq {p.q} APY {p.y}</div></div>)})}</div></div>)}
 {m==='convertir' && (<Convertir gdb={gdb} />)}
+{m==='apercucompte' && (<ApercuCompte gdb={gdb} />)}
+{m==='languageglobe' && (<LanguageGlobe gdb={gdb} />)}
+{m==='hamburgermenu' && (<HamburgerMenu gdb={gdb} />)}
+{m==='portefeuille' && (<Portefeuille gdb={gdb} />)}
+{m==='soldegcv' && (<SoldeGCV gdb={gdb} />)}
 {m==='trading' && (<Trading gdb={gdb} />)}
-  {m==='aiAutomation' && (<AiAutomation gdb={gdb} />)}
-  {m==='blockchain' && (<Blockchain gdb={gdb} />)}
-  {m==='shopping' && (<Shopping gdb={gdb} />)}
-  {m==='automobile' && (<Automobile gdb={gdb} />)}
-  {m==='agregation' && (<Agregation gdb={gdb} />)}
-  {m==='gestion' && (<Gestion gdb={gdb} />)}
+{m==='aiAutomation' && (<AiAutomation gdb={gdb} />)}
+{m==='blockchain' && (<Blockchain gdb={gdb} />)}
+{m==='shopping' && (<Shopping gdb={gdb} />)}
+{m==='automobile' && (<Automobile gdb={gdb} />)}
+{m==='agregation' && (<Agregation gdb={gdb} />)}
+{m==='gestion' && (<Gestion gdb={gdb} />)}
 {m==='receive' && (<div style={{textAlign:'center',background:'#fff',borderRadius:16,padding:14,marginTop:10}}><div style={{fontWeight:900}}>{gdb}</div><img src={'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent(gdb)} alt="QR" style={{width:180,height:180,marginTop:10,border:'2px solid #facc15',borderRadius:12}} /></div>)}
 {m!=='transferer' && m!=='virement' && m!=='pidex' && m!=='convertir' && m!=='trading' && m!=='receive' && (<div style={{background:'#fff',borderRadius:12,padding:12,marginTop:10}}><div style={{fontWeight:800}}>{m} • {gdb}</div><div style={{fontSize:11,color:'#64748b',marginTop:4}}>Module en construction - GDB unique {gdb} • PiCoin 314159 USD ref - Interopérable ISO20022</div></div>)}
 <button onClick={function(){setM(''); setA('accueil')}} style={{width:'100%',marginTop:10,background:'#f1f5f9',border:'none',borderRadius:12,padding:10}}>Retour Accueil • {gdb}</button>
