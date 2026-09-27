@@ -1,7 +1,7 @@
 // @ts-nocheck
 'use client'
 import {useState,useEffect} from 'react'
-import {Language,langs} from '../lib/lang'
+import {langs} from '../lib/lang'
 import Agregation from '../components/Agregation"
 import AiAutomation from '../components/AiAutomation'
 import ApercuCompte from '../components/ApercuCompte'
