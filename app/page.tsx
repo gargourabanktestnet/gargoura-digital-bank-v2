@@ -2,16 +2,19 @@
 'use client'
 import {useState,useEffect} from 'react'
 import {Language,langs} from '../lib/lang'
-import Convertir from '../components/Convertir'
-import Trading from '../components/Trading'
+import Agregation from '../components/Agregation"
 import AiAutomation from '../components/AiAutomation'
-import Blockchain from '../components/Blockchain'
-import Shopping from '../components/Shopping'
+import ApercuCompte from '../components/ApercuCompte'
 import Automobile from '../components/Automobile'
-import Agregation from '../components/Agregation'
+import Blockchain from '../components/Blockchain'
+import Convertir from '../components/Convertir'
 import Gestion from '../components/Gestion'
 import HamburgerMenu from '../components/HamburgerMenu'
 import LanguageGlobe from '../components/LanguageGlobe'
+import Portefeuille from '../components/Portefeuille'
+import Shopping from '../components/Shopping'
+import SoldeGCV from '../components/SoldeGCV'
+import Trading from '../components/Trading'
 function genGDB(){return 'GDB-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000)}
 export default function Page(){
 const [gdb,setGdb]=useState('GDB-2026-000000')
