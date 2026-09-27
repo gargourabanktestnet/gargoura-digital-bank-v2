@@ -63,7 +63,6 @@ useEffect(function(){try{var x=localStorage.getItem('gdb_account'); if(x) setGdb
 function open(s){setA(s); if(s==='accueil') setM(''); else setM(s)}
 return(
 <LanguageGlobe />
-<LanguageGlobe current={language} onChange={setLanguage} />
 <div style={{minHeight:'100vh',background...
 <div style={{minHeight:'100vh',background:'#f8fafc',fontFamily:'system-ui',paddingBottom:90}}>
 <div style={{background:'#1e40af',color:'#fff',padding:'12px 14px',position:'sticky',top:0,zIndex:30}}><div style={{fontWeight:900}}>Gargoura • {gdb}</div></div>
