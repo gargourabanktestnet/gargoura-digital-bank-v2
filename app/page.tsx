@@ -1,97 +1,188 @@
-‎// @ts-nocheck
-‎'use client'
-‎import {useState,useEffect} from 'react'
-‎import Convertir from '../components/Convertir'
-‎import Trading from '../components/Trading'
-‎import AiAutomation from '../components/AiAutomation'
-‎import Blockchain from '../components/Blockchain'
-‎import Shopping from '../components/Shopping'
-‎import Automobile from '../components/Automobile'
-‎import Agregation from '../components/Agregation'
-‎import Gestion from '../components/Gestion'
-‎function genGDB(){return 'GDB-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000)}
-‎export default function Page(){
-‎const [gdb,setGdb]=useState('GDB-2026-000000')
-‎const [m,setM]=useState('')
-‎const [a,setA]=useState('accueil')
-‎const [amt,setAmt]=useState('')
-‎const [dest,setDest]=useState('')
-‎const [crypto,setCrypto]=useState('π PiCoin (314,159.00 USD)')
-‎const [p2p,setP2p]=useState('interne')
-‎const [zone,setZone]=useState('CEMAC')
-‎const [bank,setBank]=useState('')
-‎const [cExt,setCExt]=useState('')
-‎const [fromT,setFromT]=useState('π PiCoin')
-‎const [toT,setToT]=useState('USDT')
-‎const [dAmt,setDAmt]=useState('')
-‎const [logoErr,setLogoErr]=useState(false)
-‎const funcs=[
-‎{id:'transferer',l:'Transférer',i:'↔️'},
-‎{id:'virement',l:'Virement Bancaire',i:'💳'},
-‎{id:'pidex',l:'Pi DEX',i:'📈'},
-‎{id:'convertir',l:'Convertir',i:'🔄'},
-‎{id:'trading',l:'Trading',i:'📊'},
-‎{id:'aiAutomation',l:'aiAutomation',i:'✨'},
-‎{id:'blockchain',l:'blockchain',i:'⛓️'},
-‎{id:'shopping',l:'Shopping',i:'🛍️'},
-‎{id:'portefeuilles',l:'Portefeuilles',i:'👛'},
-‎{id:'automobile',l:'Automobile',i:'🚗'},
-‎{id:'agregation',l:'Agrégation de Comptes',i:'🗂️'},
-‎{id:'gestion',l:'Gestion Financière',i:'📊'},
-‎]
-‎const banks={
-‎'CEMAC':['Afriland','Ecobank CEMAC','UBA','BICEC','SCB','BGFIBank'],
-‎'UEMOA':['Ecobank UEMOA','BOA','UBA Senegal','BCEAO','Coris','NSIA'],
-‎'Dollar':['Chase','BoA','Citi','Wells Fargo','Goldman'],
-‎'Jordanie':['Arab Bank JO','Housing Bank','Jordan Islamic','Cairo Amman'],
-‎'Golfe':['Dubai Islamic','QNB','NBK','FAB','Al Rajhi'],
-‎'Moyen-Orient':['Arab Bank','Bank Audi','NBE','Bank Melli'],
-‎'International':['SWIFT','SEPA','HSBC','Standard Chartered']
-‎}
-‎const cr=['π PiCoin (314,159.00 USD)','BTC','ETH','USDT','BNB','SOL','XAF','XOF']
-‎const toks=['π PiCoin','BTC','ETH','USDT','BNB','SOL']
-‎const pools=[{p:'π/USDT',q:'2.4M',y:'12.5%'},{p:'π/BTC',q:'1.8M',y:'18.2%'},{p:'π/ETH',q:'1.2M',y:'15.8%'}]
-‎useEffect(function(){try{var x=localStorage.getItem('gdb_account'); if(x) setGdb(x); else{var n=genGDB(); setGdb(n); localStorage.setItem('gdb_account',n)}}catch(e){setGdb(genGDB())}},[])
-‎function open(s){setA(s); if(s==='accueil') setM(''); else setM(s)}
-‎return(
-‎<div style={{minHeight:'100vh',background:'#f8fafc',fontFamily:'system-ui',paddingBottom:90}}>
-‎<div style={{background:'#1e40af',color:'#fff',padding:'12px 14px',position:'sticky',top:0,zIndex:30}}><div style={{fontWeight:900}}>Gargoura • {gdb}</div></div>
-‎<div style={{padding:14,display:'flex',flexDirection:'column',gap:12}}>
-‎<div style={{background:'#fff',border:'2px solid #facc15',borderRadius:20,padding:14,display:'flex',flexDirection:'column',alignItems:'center'}}>
-‎{!logoErr? (<img src="/logo.png" alt="GDB" onError={function(){setLogoErr(true)}} style={{width:70,height:70,borderRadius:35,border:'3px solid #facc15'}} />):(<div style={{width:70,height:70,borderRadius:35,background:'#1e3a8a',border:'3px solid #facc15',display:'flex',alignItems:'center',justifyContent:'center',color:'#facc15',fontWeight:900}}>GDB</div>)}
-‎<div style={{fontWeight:900,marginTop:8}}>GARGOURA DIGITAL BANK</div><div style={{fontSize:10}}>{gdb}</div>
-‎</div>
-‎<div style={{background:'#1e3a8a',borderRadius:20,padding:16,color:'#fff'}}><div style={{fontSize:13}}>Solde Total • {gdb}</div><div style={{fontWeight:900,fontSize:24,marginTop:8}}>1 pi = 314 159,00 USD</div><div style={{display:'flex',alignItems:'center',gap:6,marginTop:8}}><div style={{width:8,height:8,background:'#22c55e',borderRadius:8}}></div><div style={{fontSize:11,color:'#86efac',fontWeight:700}}>Le système est en ligne • Trading PI Actif</div></div><div style={{display:'flex',gap:8,marginTop:12}}><button onClick={function(){open('transferer')}} style={{flex:1,background:'#16a34a',color:'#fff',border:'none',borderRadius:20,padding:10,fontWeight:800}}>Envoyer</button><button onClick={function(){setM('receive')}} style={{flex:1,background:'#fff',color:'#1e3a8a',border:'none',borderRadius:20,padding:10,fontWeight:800}}>Recevoir</button></div></div>
-‎<div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:12}}><div style={{fontWeight:900}}>Fonctionnalités Courantes • 12</div><div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:8,marginTop:12}}>{funcs.map(function(f){return (<button key={f.id} onClick={function(){open(f.id)}} style={{border:f.id==='trading'?'2px solid #16a34a':'1px solid #e2e8f0',background:f.id==='trading'?'#f0fdf4':'#fff',borderRadius:12,padding:'8px 4px',display:'flex',flexDirection:'column',alignItems:'center',gap:4}}><div style={{fontSize:16}}>{f.i}</div><div style={{fontSize:7,fontWeight:700,textAlign:'center'}}>{f.l}</div></button>)})}</div></div>
-‎</div>
-‎<div style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'2px solid #facc15',display:'flex',justifyContent:'space-around',padding:'6px 2px 8px 2px',zIndex:40}}>
-‎<button onClick={function(){open('accueil')}} style={{border:'none',background:a==='accueil'?'#dbeafe':'none',fontSize:9,color:a==='accueil'?'#1e40af':'#64748b',borderRadius:12,padding:'6px 5px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:42}}><div style={{fontSize:18}}>🏠</div>Accueil</button>
-‎<button onClick={function(){open('transferer')}} style={{border:'none',background:a==='transferer'?'#dbeafe':'none',fontSize:9,color:a==='transferer'?'#1e40af':'#64748b',borderRadius:12,padding:'6px 5px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:42}}><div style={{fontSize:18}}>↔️</div>Paiements</button>
-‎<button onClick={function(){open('trading')}} style={{border:'none',background:a==='trading'?'#dbeafe':'none',fontSize:9,color:a==='trading'?'#16a34a':'#64748b',borderRadius:12,padding:'6px 5px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:42}}><div style={{fontSize:18}}>📈</div>Trading</button>
-‎<button onClick={function(){open('services')}} style={{border:'none',background:a==='services'?'#dbeafe':'none',fontSize:9,color:a==='services'?'#1e40af':'#64748b',borderRadius:12,padding:'6px 5px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:42}}><div style={{fontSize:18}}>🏛️</div>Services</button>
-‎<button onClick={function(){open('innovation')}} style={{border:'none',background:a==='innovation'?'#dbeafe':'none',fontSize:9,color:a==='innovation'?'#1e40af':'#64748b',borderRadius:12,padding:'6px 5px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:42}}><div style={{fontSize:18}}>✨</div>Innovation</button>
-‎<button onClick={function(){open('securite')}} style={{border:'none',background:a==='securite'?'#dbeafe':'none',fontSize:9,color:a==='securite'?'#1e40af':'#64748b',borderRadius:12,padding:'6px 5px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:42}}><div style={{fontSize:18}}>🛡️</div>Securite</button>
-‎<button onClick={function(){open('support')}} style={{border:'none',background:a==='support'?'#dbeafe':'none',fontSize:9,color:a==='support'?'#1e40af':'#64748b',borderRadius:12,padding:'6px 5px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:42}}><div style={{fontSize:18}}>❓</div>Support</button>
-‎</div>
-‎{m? (<div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:60,display:'flex',alignItems:'flex-end'}}><div style={{background:'#f8fafc',width:'100%',borderRadius:'20px 20px 0 0',padding:12,maxHeight:'92vh',overflowY:'auto'}}>
-‎<div style={{display:'flex',justifyContent:'space-between',background:'#1e40af',color:'#fff',padding:10,borderRadius:12}}><div style={{fontWeight:900,fontSize:11}}>{gdb} • {m}</div><button onClick={function(){setM(''); setA('accueil')}} style={{border:'none',background:'rgba(255,255,255,0.2)',color:'#fff',borderRadius:20,width:28,height:28}}>✕</button></div>
-‎{m==='transferer' && (<div style={{background:'#fff',borderRadius:16,padding:12,marginTop:10}}><div style={{display:'flex',background:'#f1f5f9',borderRadius:12,padding:4}}><button onClick={function(){setP2p('interne')}} style={{flex:1,background:p2p==='interne'?'#1e40af':'transparent',color:p2p==='interne'?'#fff':'#64748b',border:'none',borderRadius:10,padding:8,fontSize:12,fontWeight:800}}>Interne</button><button onClick={function(){setP2p('externe')}} style={{flex:1,background:p2p==='externe'?'#1e40af':'transparent',color:p2p==='externe'?'#fff':'#64748b',border:'none',borderRadius:10,padding:8,fontSize:12,fontWeight:800}}>Externe</button></div>{p2p==='interne'? (<div style={{marginTop:10}}><input value={dest} onChange={function(e){setDest(e.target.value)}} placeholder="Compte ou ID" style={{width:'100%',padding:10,borderRadius:12,border:'1px solid #cbd5e1'}} /><select value={crypto} onChange={function(e){setCrypto(e.target.value)}} style={{width:'100%',padding:10,borderRadius:12,border:'1px solid #cbd5e1',marginTop:8}}>{cr.map(function(c){return (<option key={c} value={c}>{c}</option>)})}</select><input value={amt} onChange={function(e){setAmt(e.target.value)}} placeholder="0.00" style={{width:'100%',padding:10,borderRadius:12,border:'1px solid #cbd5e1',marginTop:8}} /><button onClick={function(){setM('Transfert '+amt+' '+crypto+' de '+gdb+' vers '+dest)}} style={{width:'100%',marginTop:8,background:'#1e40af',color:'#fff',border:'none',borderRadius:12,padding:12,fontWeight:800}}>Envoyer</button></div>):(<div style={{marginTop:10}}><div style={{display:'flex',flexDirection:'column',gap:4,border:'1px solid #e2e8f0',borderRadius:12,padding:6}}>{Object.keys(banks).map(function(z){return (<button key={z} onClick={function(){setZone(z); setBank('')}} style={{padding:'8px 10px',border:'none',borderRadius:8,background:zone===z?'#1e40af':'#f8fafc',color:zone===z?'#fff':'#334155',textAlign:'left',fontSize:12}}>- {z}</button>)})}</div><div style={{border:'1px solid #cbd5e1',borderRadius:12,marginTop:8,maxHeight:80,overflowY:'auto'}}>{(banks[zone]||[]).map(function(b){return (<button key={b} onClick={function(){setBank(b)}} style={{width:'100%',padding:'6px 10px',border:'none',borderBottom:'1px solid #f1f5f9',background:bank===b?'#eff6ff':'#fff',textAlign:'left',fontSize:11}}>{bank===b?'✓ ':''}{b}</button>)})}</div><input value={cExt} onChange={function(e){setCExt(e.target.value)}} placeholder="Numéro compte" style={{width:'100%',padding:10,borderRadius:12,border:'1px solid #cbd5e1',marginTop:8}} /><input value={amt} onChange={function(e){setAmt(e.target.value)}} placeholder="0.00 PiCoin 314159 USD" style={{width:'100%',padding:10,borderRadius:12,border:'1px solid #cbd5e1',marginTop:8}} /><button onClick={function(){setM('sendToExternalBank '+amt+' de '+gdb+' vers '+bank)}} style={{width:'100%',marginTop:8,background:'#1e40af',color:'#fff',border:'none',borderRadius:12,padding:12,fontWeight:900}}>sendToExternalBank</button></div>)}</div>)}
-‎{m==='virement' && (<div style={{background:'#fff',borderRadius:16,padding:12,marginTop:10}}><div style={{fontWeight:900}}>Virement Bancaire • ISO20022 SWIFT SEPA</div><div style={{display:'flex',flexDirection:'column',gap:4,marginTop:8,border:'1px solid #e2e8f0',borderRadius:12,padding:6}}>{Object.keys(banks).map(function(z){return (<button key={z} onClick={function(){setZone(z); setBank('')}} style={{padding:'8px 10px',border:'none',borderRadius:8,background:zone===z?'#16a34a':'#f8fafc',color:zone===z?'#fff':'#334155',textAlign:'left',fontSize:12}}>- {z}</button>)})}</div><div style={{border:'1px solid #cbd5e1',borderRadius:12,marginTop:8,maxHeight:80,overflowY:'auto'}}>{(banks[zone]||[]).map(function(b){return (<button key={b} onClick={function(){setBank(b)}} style={{width:'100%',padding:'6px 10px',border:'none',background:bank===b?'#dcfce7':'#fff',textAlign:'left',fontSize:11}}>{b}</button>)})}</div><input value={cExt} onChange={function(e){setCExt(e.target.value)}} placeholder="Compte bénéficiaire" style={{width:'100%',padding:10,borderRadius:12,border:'1px solid #cbd5e1',marginTop:8}} /><input value={amt} onChange={function(e){setAmt(e.target.value)}} placeholder="0.00" style={{width:'100%',padding:10,borderRadius:12,border:'2px solid #16a34a',marginTop:8,fontWeight:800}} /><button onClick={function(){setM('Virement '+amt+' de '+gdb+' vers '+bank)}} style={{width:'100%',marginTop:8,background:'#16a34a',color:'#fff',border:'none',borderRadius:12,padding:12,fontWeight:900}}>Envoyer Virement</button></div>)}
-‎{m==='pidex' && (<div style={{background:'#fff',borderRadius:16,padding:12,marginTop:10}}><div style={{fontWeight:900}}>Pi DEX & AMM • {gdb.slice(0,12)} • 314,159 USD ref</div><div style={{background:'#faf5ff',border:'1px solid #e9d5ff',borderRadius:12,padding:10,marginTop:10}}><div style={{display:'flex',gap:6}}><select value={fromT} onChange={function(e){setFromT(e.target.value)}} style={{padding:8,borderRadius:10,border:'1px solid #cbd5e1',fontWeight:800}}>{toks.map(function(t){return (<option key={t} value={t}>{t}</option>)})}</select><input value={dAmt} onChange={function(e){setDAmt(e.target.value)}} placeholder="0.00" style={{flex:1,padding:10,borderRadius:10,border:'1px solid #cbd5e1',fontWeight:800}} /></div><div style={{textAlign:'center',margin:'6px 0'}}>⇅</div><div style={{display:'flex',gap:6}}><select value={toT} onChange={function(e){setToT(e.target.value)}} style={{padding:8,borderRadius:10,border:'1px solid #cbd5e1',fontWeight:800}}>{toks.map(function(t){return (<option key={t} value={t}>{t}</option>)})}</select><input value={dAmt? (parseFloat(dAmt)*2.5).toFixed(2):''} readOnly placeholder="Estimé" style={{flex:1,padding:10,borderRadius:10,border:'1px solid #e2e8f0',background:'#f8fafc'}} /></div></div><button onClick={function(){setM('Swap '+dAmt+' '+fromT+' -> '+toT+' de '+gdb)}} style={{width:'100%',marginTop:10,background:'#a855f7',color:'#fff',border:'none',borderRadius:12,padding:12,fontWeight:900}}>Swap via AMM {fromT}→{toT}</button><div style={{marginTop:10}}>{pools.map(function(p){return (<div key={p.p} style={{display:'flex',justifyContent:'space-between',padding:'8px 10px',border:'1px solid #e2e8f0',borderRadius:10,marginTop:4,fontSize:11}}><div style={{fontWeight:800}}>{p.p}</div><div>Liq {p.q} APY {p.y}</div></div>)})}</div></div>)}
-‎{m==='convertir' && (<Convertir gdb={gdb} />)}
-‎{m==='trading' && (<Trading gdb={gdb} />)}
-‎  {m==='aiAutomation' && (<AiAutomation gdb={gdb} />)}
-‎  {m==='blockchain' && (<Blockchain gdb={gdb} />)}
-‎  {m==='shopping' && (<Shopping gdb={gdb} />)}
-‎  {m==='automobile' && (<Automobile gdb={gdb} />)}
-‎  {m==='agregation' && (<Agregation gdb={gdb} />)}
-‎  {m==='gestion' && (<Gestion gdb={gdb} />)}
-‎{m==='receive' && (<div style={{textAlign:'center',background:'#fff',borderRadius:16,padding:14,marginTop:10}}><div style={{fontWeight:900}}>{gdb}</div><img src={'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent(gdb)} alt="QR" style={{width:180,height:180,marginTop:10,border:'2px solid #facc15',borderRadius:12}} /></div>)}
-‎{m!=='transferer' && m!=='virement' && m!=='pidex' && m!=='convertir' && m!=='trading' && m!=='receive' && (<div style={{background:'#fff',borderRadius:12,padding:12,marginTop:10}}><div style={{fontWeight:800}}>{m} • {gdb}</div><div style={{fontSize:11,color:'#64748b',marginTop:4}}>Module en construction - GDB unique {gdb} • PiCoin 314159 USD ref - Interopérable ISO20022</div></div>)}
-‎<button onClick={function(){setM(''); setA('accueil')}} style={{width:'100%',marginTop:10,background:'#f1f5f9',border:'none',borderRadius:12,padding:10}}>Retour Accueil • {gdb}</button>
-‎</div></div>) : null}
-‎</div>
-‎)
-‎    
- }
-‎
+// @ts-nocheck
+'use client'
+import {useState,useEffect} from 'react'
+function genGDB(){return 'GDB-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000)}
+
+const LANGS={
+  FR:{code:'FR',flag:'🇫🇷',name:'Français'},
+  EN:{code:'EN',flag:'🇬🇧',name:'English'},
+  AR:{code:'AR',flag:'🇸🇦',name:'العربية'},
+  ES:{code:'ES',flag:'🇪🇸',name:'Español'},
+  ZH:{code:'ZH',flag:'🇨🇳',name:'中文'},
+  HA:{code:'HA',flag:'🇹🇩',name:'Hausa/Chadien'},
+}
+
+const TR={
+  FR:{
+    bank:'GARGOURA DIGITAL BANK',solde:'Solde Total',system:'Système en ligne • 12 modules actifs',
+    func:'Fonctionnalités Courantes • 12',allFunc:'Toutes fonctionnelles • Sans réduction',
+    envoyer:'Envoyer',recevoir:'Recevoir',services:'Services',innovation:'Innovation',securite:'Sécurité',support:'Support',
+    accueil:'Accueil',wallet:'Wallet',shopping:'Shopping',chain:'Chain',payments:'Paiements',
+    langTitle:'Langue Mondiale • 6 langues',langDesc:'Choisis ta langue - Plateforme multilingue PI 314,159 USD',
+    servicesTitle:'Services Bancaires Complets',servicesDesc:'Tous services ISO20022 CEMAC/UEMOA/Golfe',
+    innovTitle:'Innovation & Technologie',securTitle:'Sécurité & Protection',supportTitle:'Support & Assistance 24/7',
+  },
+  EN:{
+    bank:'GARGOURA DIGITAL BANK',solde:'Total Balance',system:'System online • 12 active modules',
+    func:'Common Features • 12',allFunc:'All functional • No reduction',
+    envoyer:'Send',recevoir:'Receive',services:'Services',innovation:'Innovation',securite:'Security',support:'Support',
+    accueil:'Home',wallet:'Wallet',shopping:'Shopping',chain:'Chain',payments:'Payments',
+    langTitle:'World Language • 6 languages',langDesc:'Choose your language - PI 314,159 USD multilingual platform',
+    servicesTitle:'Complete Banking Services',servicesDesc:'All ISO20022 services CEMAC/UEMOA/Gulf',
+    innovTitle:'Innovation & Technology',securTitle:'Security & Protection',supportTitle:'Support & Assistance 24/7',
+  },
+  AR:{
+    bank:'بنك غرغورا الرقمي',solde:'الرصيد الإجمالي',system:'النظام متصل • 12 وحدة نشطة',
+    func:'الميزات الشائعة • 12',allFunc:'كلها فعالة • بدون تقليص',
+    envoyer:'إرسال',recevoir:'استلام',services:'الخدمات',innovation:'الابتكار',securite:'الأمان',support:'الدعم',
+    accueil:'الرئيسية',wallet:'المحفظة',shopping:'التسوق',chain:'السلسلة',payments:'المدفوعات',
+    langTitle:'اللغة العالمية • 6 لغات',langDesc:'اختر لغتك - منصة متعددة اللغات PI 314,159 دولار',
+    servicesTitle:'خدمات مصرفية كاملة',servicesDesc:'جميع خدمات ISO20022',
+    innovTitle:'الابتكار والتكنولوجيا',securTitle:'الأمن والحماية',supportTitle:'الدعم والمساعدة 24/7',
+  },
+  ES:{
+    bank:'GARGOURA DIGITAL BANK',solde:'Saldo Total',system:'Sistema en línea • 12 módulos activos',
+    func:'Funciones Comunes • 12',allFunc:'Todas funcionales • Sin reducción',
+    envoyer:'Enviar',recevoir:'Recibir',services:'Servicios',innovation:'Innovación',securite:'Seguridad',support:'Soporte',
+    accueil:'Inicio',wallet:'Billetera',shopping:'Compras',chain:'Cadena',payments:'Pagos',
+    langTitle:'Idioma Mundial • 6 idiomas',langDesc:'Elige tu idioma - Plataforma PI 314,159 USD',
+    servicesTitle:'Servicios Bancarios Completos',servicesDesc:'Todos servicios ISO20022',
+    innovTitle:'Innovación y Tecnología',securTitle:'Seguridad y Protección',supportTitle:'Soporte 24/7',
+  },
+  ZH:{
+    bank:'GARGOURA数字银行',solde:'总余额',system:'系统在线 • 12个活跃模块',
+    func:'常用功能 • 12',allFunc:'全部功能 • 无删减',
+    envoyer:'发送',recevoir:'接收',services:'服务',innovation:'创新',securite:'安全',support:'支持',
+    accueil:'首页',wallet:'钱包',shopping:'购物',chain:'链',payments:'支付',
+    langTitle:'世界语言 • 6种语言',langDesc:'选择你的语言 - PI 314,159美元多语言平台',
+    servicesTitle:'完整银行服务',servicesDesc:'所有ISO20022服务',
+    innovTitle:'创新与技术',securTitle:'安全与保护',supportTitle:'24/7支持',
+  },
+  HA:{
+    bank:'GARGOURA DIGITAL BANK',solde:'Jimlar Ma\'auni',system:'Tsarin yana kan layi • 12 modules',
+    func:'Abubuwan gama gari • 12',allFunc:'Duka suna aiki • Ba ragi',
+    envoyer:'Aika',recevoir:'Karɓa',services:'Sabis',innovation:'Ƙirƙira',securite:'Tsaro',support:'Tallafi',
+    accueil:'Gida',wallet:'Wallet',shopping:'Siyayya',chain:'Chain',payments:'Biyan kuɗi',
+    langTitle:'Harshen Duniya • Harsuna 6',langDesc:'Zaɓi yarenka - PI 314,159 USD',
+    servicesTitle:'Cikakkun Sabis na Banki',servicesDesc:'Duk sabis ISO20022',
+    innovTitle:'Ƙirƙira & Fasaha',securTitle:'Tsaro & Kariya',supportTitle:'Tallafi 24/7',
+  },
+}
+
+export default function Page(){
+const [gdb,setGdb]=useState('GDB-2026-433422')
+const [m,setM]=useState('')
+const [a,setA]=useState('accueil')
+const [lang,setLang]=useState('FR')
+const [logoErr,setLogoErr]=useState(false)
+const [amt,setAmt]=useState('')
+const [dest,setDest]=useState('')
+const t=TR[lang]||TR.FR
+
+useEffect(function(){
+  try{
+    var x=localStorage.getItem('gdb_account'); if(x) setGdb(x); else{var n=genGDB(); setGdb(n); localStorage.setItem('gdb_account',n)}
+    var l=localStorage.getItem('gdb_lang'); if(l && TR[l]) setLang(l)
+  }catch(e){setGdb(genGDB())}
+},[])
+function changeLang(l){setLang(l); try{localStorage.setItem('gdb_lang',l)}catch(e){}}
+function open(s){setA(s); if(s==='accueil') setM(''); else setM(s)}
+
+const funcs=[
+{id:'transferer',l:'Transférer',i:'↔️'},{id:'virement',l:'Virement',i:'💳'},{id:'pidex',l:'Pi DEX',i:'📈'},{id:'convertir',l:'Convertir',i:'🔄'},
+{id:'trading',l:'Trading',i:'📊'},{id:'aiAutomation',l:'AI Auto',i:'✨'},{id:'blockchain',l:'Blockchain',i:'⛓️'},{id:'shopping',l:'Shopping',i:'🛍️'},
+{id:'portefeuilles',l:'Portefeuilles',i:'👛'},{id:'automobile',l:'Automobile',i:'🚗'},{id:'agregation',l:'Agrégation',i:'🗂️'},{id:'gestion',l:'Gestion',i:'📊'},
+]
+
+return(
+<div style={{minHeight:'100vh',background:'#f8fafc',fontFamily:'system-ui',paddingBottom:110}}>
+<div style={{background:'#1e40af',color:'#fff',padding:'10px 12px',position:'sticky',top:0,zIndex:30,borderBottom:'3px solid #facc15',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+  <div style={{fontWeight:900,fontSize:11}}>Gargoura • {gdb.slice(0,10)} • 1 PI = 314,159 USD • {LANGS[lang].flag} {lang}</div>
+  <div style={{display:'flex',gap:4}}>{Object.keys(LANGS).map(function(l){return (<button key={l} onClick={function(){changeLang(l)}} style={{border:lang===l?'2px solid #facc15':'1px solid rgba(255,255,255,0.3)',background:lang===l?'#facc15':'rgba(255,255,255,0.1)',color:lang===l?'#1e3a8a':'#fff',borderRadius:6,padding:'2px 5px',fontSize:9,fontWeight:800}}>{LANGS[l].flag}</button>)})}</div>
+</div>
+
+<div style={{padding:14,display:'flex',flexDirection:'column',gap:12}}>
+<div style={{background:'#fff',border:'2px solid #facc15',borderRadius:20,padding:14,display:'flex',flexDirection:'column',alignItems:'center'}}>
+{!logoErr? (<img src="/logo.png" alt="GDB" onError={function(){setLogoErr(true)}} style={{width:60,height:60,borderRadius:30,border:'3px solid #facc15'}} />):(<div style={{width:60,height:60,borderRadius:30,background:'#1e3a8a',border:'3px solid #facc15',display:'flex',alignItems:'center',justifyContent:'center',color:'#facc15',fontWeight:900}}>GDB</div>)}
+<div style={{fontWeight:900,marginTop:6,fontSize:13}}>{t.bank}</div><div style={{fontSize:9,color:'#64748b'}}>{gdb} • ISO20022 • PI 314159 USD • {LANGS[lang].name}</div>
+</div>
+
+<div style={{background:'#1e3a8a',borderRadius:20,padding:14,color:'#fff'}}>
+<div style={{fontSize:12}}>{t.solde} • {gdb.slice(0,12)}</div>
+<div style={{fontWeight:900,fontSize:22,marginTop:6}}>1 PI = 314 159,00 USD</div>
+<div style={{display:'flex',alignItems:'center',gap:6,marginTop:8}}><div style={{width:8,height:8,background:'#22c55e',borderRadius:8}}></div><div style={{fontSize:10,color:'#86efac',fontWeight:700}}>{t.system} • {gdb.slice(0,8)} • {LANGS[lang].flag} {lang}</div></div>
+<div style={{display:'flex',gap:8,marginTop:12}}><button onClick={function(){open('transferer')}} style={{flex:1,background:'#16a34a',color:'#fff',border:'none',borderRadius:20,padding:10,fontWeight:800,fontSize:11}}>{t.envoyer}</button><button onClick={function(){open('receive')}} style={{flex:1,background:'#fff',color:'#1e3a8a',border:'none',borderRadius:20,padding:10,fontWeight:800,fontSize:11}}>{t.recevoir}</button></div>
+</div>
+
+<div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:12}}>
+<div style={{fontWeight:900,fontSize:13}}>{t.func}</div>
+<div style={{fontSize:9,color:'#64748b',marginTop:2}}>{t.allFunc} • GDB {gdb.slice(0,8)} • {LANGS[lang].flag} {lang}</div>
+<div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:8,marginTop:10}}>
+{funcs.map(function(f){return (<button key={f.id} onClick={function(){open(f.id)}} style={{border:f.id===a?'2px solid #1e40af':'1px solid #e2e8f0',background:f.id===a?'#dbeafe':'#fff',borderRadius:12,padding:'8px 4px',display:'flex',flexDirection:'column',alignItems:'center',gap:4}}><div style={{fontSize:16}}>{f.i}</div><div style={{fontSize:7,fontWeight:700,textAlign:'center',lineHeight:'9px'}}>{f.l}</div></button>)})}
+</div>
+</div>
+</div>
+
+<div style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'3px solid #facc15',zIndex:40}}>
+<div style={{display:'flex',justifyContent:'space-around',padding:'6px 2px'}}>
+<button onClick={function(){open('accueil')}} style={{border:'none',background:a==='accueil'?'#dbeafe':'none',fontSize:8,color:a==='accueil'?'#1e40af':'#64748b',borderRadius:10,padding:'4px 6px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:44}}><div style={{fontSize:16}}>🏠</div>{t.accueil}</button>
+<button onClick={function(){open('services')}} style={{border:'none',background:a==='services'?'#dbeafe':'none',fontSize:8,color:a==='services'?'#1e40af':'#64748b',borderRadius:10,padding:'4px 6px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:44}}><div style={{fontSize:16}}>💼</div>{t.services}</button>
+<button onClick={function(){open('innovation')}} style={{border:'none',background:a==='innovation'?'#dbeafe':'none',fontSize:8,color:a==='innovation'?'#16a34a':'#64748b',borderRadius:10,padding:'4px 6px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:44}}><div style={{fontSize:16}}>🚀</div>{t.innovation}</button>
+<button onClick={function(){open('portefeuilles')}} style={{border:'none',background:a==='portefeuilles'?'#dbeafe':'none',fontSize:8,color:a==='portefeuilles'?'#a855f7':'#64748b',borderRadius:10,padding:'4px 6px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:44}}><div style={{fontSize:16}}>👛</div>{t.wallet}</button>
+<button onClick={function(){open('securite')}} style={{border:'none',background:a==='securite'?'#dbeafe':'none',fontSize:8,color:a==='securite'?'#ef4444':'#64748b',borderRadius:10,padding:'4px 6px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:44}}><div style={{fontSize:16}}>🛡️</div>{t.securite}</button>
+<button onClick={function(){open('support')}} style={{border:'none',background:a==='support'?'#dbeafe':'none',fontSize:8,color:a==='support'?'#f59e0b':'#64748b',borderRadius:10,padding:'4px 6px',display:'flex',flexDirection:'column',alignItems:'center',minWidth:44}}><div style={{fontSize:16}}>❓</div>{t.support}</button>
+</div>
+<div style={{display:'flex',justifyContent:'center',gap:4,padding:'2px 0 6px 0',borderTop:'1px solid #f1f5f9'}}>{Object.keys(LANGS).map(function(l){return (<button key={l} onClick={function(){changeLang(l)}} style={{border:lang===l?'1px solid #1e40af':'1px solid #e2e8f0',background:lang===l?'#dbeafe':'#fff',borderRadius:10,padding:'2px 6px',fontSize:8,fontWeight:lang===l?'800':'500'}}>{LANGS[l].flag} {l}</button>)})}</div>
+</div>
+
+{m? (<div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.55)',zIndex:60,display:'flex',alignItems:'flex-end'}}><div style={{background:'#f8fafc',width:'100%',borderRadius:'20px 20px 0 0',padding:12,maxHeight:'92vh',overflowY:'auto',borderTop:'3px solid #facc15'}}>
+<div style={{display:'flex',justifyContent:'space-between',background:'#1e40af',color:'#fff',padding:10,borderRadius:12}}><div style={{fontWeight:900,fontSize:11}}>{gdb} • {m} • PI 314159 • {LANGS[lang].flag} {lang}</div><button onClick={function(){setM(''); setA('accueil')}} style={{border:'none',background:'rgba(255,255,255,0.2)',color:'#fff',borderRadius:20,width:28,height:28}}>✕</button></div>
+
+{m==='services' && (
+<div style={{background:'#fff',borderRadius:16,padding:12,marginTop:10}}>
+<div style={{fontWeight:900}}>{t.servicesTitle} • {gdb.slice(0,8)}</div><div style={{fontSize:10,color:'#64748b',marginTop:2}}>{t.servicesDesc} • {LANGS[lang].flag}</div>
+<div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:8,marginTop:12}}>
+{[{i:'↔️',n:'Transférer',d:'Interne/Externe'},{i:'💳',n:'Virement',d:'SWIFT/SEPA'},{i:'🔄',n:'Convertir',d:'PI 314159 USD'},{i:'📊',n:'Trading',d:'PI/BTC/ETH'},{i:'👛',n:'Portefeuilles',d:'8 wallets'},{i:'🛍️',n:'Shopping',d:'Amazon etc'},{i:'🚗',n:'Automobile',d:'Toyota/Mercedes'},{i:'🗂️',n:'Agrégation',d:'21 banques'}].map(function(s){return (<div key={s.n} style={{border:'1px solid #e2e8f0',borderRadius:12,padding:10}}><div style={{display:'flex',gap:6,alignItems:'center'}}><div style={{fontSize:18}}>{s.i}</div><div><div style={{fontWeight:800,fontSize:11}}>{s.n}</div><div style={{fontSize:9,color:'#64748b'}}>{s.d}</div></div></div><button onClick={function(){open(s.n==='Transférer'?'transferer':s.n==='Virement'?'virement':s.n.toLowerCase())}} style={{width:'100%',marginTop:6,background:'#1e40af',color:'#fff',border:'none',borderRadius:8,padding:6,fontSize:9,fontWeight:800}}>Ouvrir {s.n}</button></div>)})}
+</div>
+<div style={{marginTop:12,background:'#f0fdf4',borderRadius:12,padding:10}}><div style={{fontWeight:800,fontSize:11}}>🌍 Zones Couvertes • ISO20022</div><div style={{fontSize:10,marginTop:4}}>CEMAC: Tchad, Cameroun, Gabon • UEMOA: Sénégal, Côte d’Ivoire • Golfe: UAE, Qatar, Arabie • Jordanie • International • GDB {gdb}</div></div>
+</div>
+)}
+
+{m==='innovation' && (
+<div style={{background:'#fff',borderRadius:16,padding:12,marginTop:10}}>
+<div style={{fontWeight:900}}>{t.innovTitle} • PI Network • {gdb.slice(0,8)}</div>
+<div style={{display:'grid',gap:8,marginTop:10}}>
+<div style={{background:'#faf5ff',border:'1px solid #e9d5ff',borderRadius:12,padding:10}}><div style={{fontWeight:800,fontSize:11}}>⛓️ Pi Network Blockchain • 1 PI = 314,159 USD ref</div><div style={{fontSize:10,marginTop:4}}>GDB {gdb} ancré sur Pi Blockchain • Transactions 0.01s • Frais 0.001 PI • ISO20022 compatible</div><button onClick={function(){alert('Explorer Pi Blockchain pour '+gdb+' - 314159 USD ref')}} style={{marginTop:6,background:'#a855f7',color:'#fff',border:'none',borderRadius:8,padding:6,fontSize:9,fontWeight:800}}>Explorer PiScan • {gdb.slice(0,6)}</button></div>
+<div style={{background:'#fffbeb',border:'1px solid #fde68a',borderRadius:12,padding:10}}><div style={{fontWeight:800,fontSize:11}}>✨ AI Automation • BOT PI</div><div style={{fontSize:10,marginTop:4}}>• Auto-trading PI 314k • Auto-shopping • Auto-virement CEMAC/UEMOA • Auto-conversion XAF/XOF→PI</div><button onClick={function(){open('aiAutomation')}} style={{marginTop:6,background:'#f59e0b',color:'#fff',border:'none',borderRadius:8,padding:6,fontSize:9,fontWeight:800}}>Ouvrir aiAutomation</button></div>
+<div style={{background:'#eff6ff',border:'1px solid #bfdbfe',borderRadius:12,padding:10}}><div style={{fontWeight:800,fontSize:11}}>🚀 Pi DEX & DeFi • AMM</div><div style={{fontSize:10,marginTop:4}}>Liquidity pools PI/USDT, PI/BTC, PI/ETH • APY 12-18% • GDB {gdb.slice(0,8)} • Slippage 0.5%</div><button onClick={function(){open('pidex')}} style={{marginTop:6,background:'#1e40af',color:'#fff',border:'none',borderRadius:8,padding:6,fontSize:9,fontWeight:800}}>Ouvrir Pi DEX</button></div>
+</div>
+</div>
+)}
+
+{m==='securite' && (
+<div style={{background:'#fff',borderRadius:16,padding:12,marginTop:10}}>
+<div style={{fontWeight:900}}>{t.securTitle} • GDB {gdb.slice(0,8)} • ISO20022</div>
+<div style={{display:'grid',gap:8,marginTop:10}}>
+<div style={{border:'2px solid #22c55e',borderRadius:12,padding:10,background:'#f0fdf4'}}><div style={{display:'flex',justifyContent:'space-between'}}><div style={{fontWeight:800,fontSize:11}}>🔐 KYC Vérifié • GDB {gdb.slice(0,8)}</div><div style={{fontSize:9,background:'#22c55e',color:'#fff',padding:'2px 6px',borderRadius:10}}>✅ Vérifié</div></div><div style={{fontSize:10,marginTop:4}}>Compte {gdb} vérifié • Pi Network KYC • Niveau 3 • Limite illimitée PI</div></div>
+<div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:6}}>
+{[{n:'2FA Auth',d:'Google Authenticator',s:'✅ Actif'},{n:'Biométrie',d:'Empreinte/Face ID',s:'✅ Actif'},{n:'PIN PI',d:'6 chiffres PI 314159',s:'✅ Actif'},{n:'Anti-Fraude',d:'AI Détection',s:'✅ Actif'},{n:'Chiffrement',d:'AES-256 GDB',s:'✅ Actif'},{n:'ISO20022',d:'SWIFT/SEPA validé',s:'✅ Actif'}].map(function(sec){return (<div key={sec.n} style={{border:'1px solid #e2e8f0',borderRadius:10,padding:8}}><div style={{fontWeight:800,fontSize:10}}>{sec.n}</div><div style={{fontSize:8,color:'#64748b',marginTop:2}}>{sec.d}</div><div style={{fontSize:8,color:'#16a34a',fontWeight:800,marginTop:2}}>{sec.s}</div></div>)})}
+</div>
+<div style={{background:'#1e3a8a',color:'#fff',borderRadius:12,padding:10,marginTop:8}}><div style={{fontSize:11,fontWeight:800}}>🛡️ Protection Fonds • GDB {gdb}</div><div style={{fontSize:10,marginTop:4}}>• Fonds garantis PI 314,159 USD ref • Cold wallet 95% • Assurance $250M • Audit Certik • GDB {gdb.slice(0,8)} unique</div></div>
+</div>
+</div>
+)}
+
+{m==='support' && (
+<div style={{background:'#fff',borderRadius:16,padding:12,marginTop:10}}>
+<div style={{fontWeight:900}}>{t.supportTitle} • {gdb.slice(0,8)} • {LANGS[lang].flag}</div>
+<div style={{display:'grid',gap:8,marginTop:10}}>
+<div style={{background:'#eff6ff',borderRadius:12,padding:10,display:'flex',justifyContent:'space-between',alignItems:'center'}}><div><div style={{fontWeight:800,fontSize:11}}>💬 Chat en Direct • 24/7 • {LANGS[lang].name}</div><div style={{fontSize:9,color:'#64748b'}}>Réponse en 2 min • GDB {gdb.slice(0,8)} • PI Support</div></div><button onClick={function(){alert('Chat Support ouvert pour '+gdb+' - Langue '+lang+' - Agent PI disponible')}} style={{background:'#1e40af',color:'#fff',border:'none',borderRadius:8,padding:'8px 12px',fontSize:10,fontWeight:800}}>Ouvrir Chat</button></div>
+<div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:6}}>
+{[{q:'Comment envoyer PI?',a:'Transferer→montant PI'},{q:'1 PI =?',a:'314,159 USD ref fixe'},{q:'Frais virement?',a:'0.001 PI CEMAC/UEMOA'},{q:'Sites Shopping?',a:'Amazon officiel PI'},{q:'GDB c’est quoi?',a:'ID unique '+gdb.slice(0,8)},{q:'Langues?',a:'FR/EN/AR/ES/ZH/HA'}].map(function(f){return (<div key={f.q} style={{border:'1px solid #e2e8f0',borderRadius:10,padding:8}}><div style={{fontWeight:800,fontSize:10}}>{f.q}</div><div style={{fontSize:9,color:'#16a34a',marginTop:2}}>{f.a}</div></div>)})}
+</div>
+<div style={{background:'#fffbeb',borderRadius:12,padding:10,marginTop:8}}><div style={{fontWeight:800,fontSize:11}}>📞 Contacts • GDB {gdb.slice(0,8)}</div><div style={{fontSize:10,marginTop:4}}>• WhatsApp: +235 90 00 00 00 • Email: support@gargourabank.com • Telegram: @GargouraBank • Langue: {LANGS[lang].name} • GDB {gdb}</div><button onClick={function(){alert('Ticket Support créé pour '+gdb+' - Langue '+lang+' - Réponse sous 1h - PI 314159')}} style={{width:'100%',marginTop:6,background:'#f59e0b',color:'#fff',border:'none',borderRadius:8,padding:8,fontSize:10,fontWeight:800}}>Créer Ticket • {gdb.slice(0,6)}</button></div>
+</div>
+</div>
+)}
+
+{m==='transferer' && (<div style={{background:'#fff',borderRadius:16,padding:12,marginTop:10}}><div style={{fontWeight:900}}>Transférer • {gdb.slice(0,8)} • {LANGS[lang].flag}</div><input value={dest} onChange={function(e){setDest(e.target.value)}} placeholder="GDB destinataire" style={{width:'100%',padding:10,borderRadius:12,border:'1px solid #cbd5e1',marginTop:8}} /><input value={amt} onChange={function(e){setAmt(e.target.value)}} placeholder="0.00 PI 314159
