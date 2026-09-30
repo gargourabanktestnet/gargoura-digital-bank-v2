@@ -2,7 +2,7 @@
 "use client"
 import { useState,useEffect } from "react"
 import { Virement,PiDex,Cartes,KYCComp,ConvertirComp,TradingComp,AIAutoComp,BlockchainComp,ShoppingComp,PortefeuilleComp,AutomobileComp,AgregationComp,GestionComp } from "./Components"
-import TransfertModule from "@/components/TransfertModule" // <-- NOUVEAU MODULE P2P Interne/Externe V4
+import TransfertModule from "./components/TransfertModule" // <-- NOUVEAU MODULE P2P Interne/Externe V4
 
 const gen=()=> "GDB-"+new Date().getFullYear()+"-"+Math.floor(100000+Math.random()*900000)
 const genRcv=()=> "GDB-RCV-"+Math.floor(10000000+Math.random()*90000000)
