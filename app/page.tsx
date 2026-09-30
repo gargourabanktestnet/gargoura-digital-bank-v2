@@ -1,7 +1,9 @@
 // @ts-nocheck
 "use client"
 import { useState,useEffect } from "react"
-import { Transferer,Virement,PiDex,Cartes,KYCComp,ConvertirComp,TradingComp,AIAutoComp,BlockchainComp,ShoppingComp,PortefeuilleComp,AutomobileComp,AgregationComp,GestionComp } from "./Components"
+import { Virement,PiDex,Cartes,KYCComp,ConvertirComp,TradingComp,AIAutoComp,BlockchainComp,ShoppingComp,PortefeuilleComp,AutomobileComp,AgregationComp,GestionComp } from "./Components"
+import TransfertModule from "@/components/TransfertModule" // <-- NOUVEAU MODULE P2P Interne/Externe V4
+
 const gen=()=> "GDB-"+new Date().getFullYear()+"-"+Math.floor(100000+Math.random()*900000)
 const genRcv=()=> "GDB-RCV-"+Math.floor(10000000+Math.random()*90000000)
 const LANGS=["FR","EN","AR","ES","ZH","HA"]
@@ -46,7 +48,7 @@ return(
 {profileOpen && (<div style={{position:"fixed",inset:0,zIndex:70,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:"#fff",borderRadius:12,padding:12,width:"85%"}}><div style={{fontWeight:900}}>👤 Profil • {gdb}</div><div style={{fontSize:11,marginTop:6}}>{kyc? <span style={{color:"#16a34a",fontWeight:800}}>KYC Vérifié ✅ • {piUser} • Adresse G... liée</span> : "KYC non vérifié"}</div><div style={{fontSize:10,marginTop:6}}>Code Réception: {rcv} • Stockage permanent téléphone</div><img src={qr} alt="qr" style={{width:120,height:120,marginTop:8}}/><button onClick={()=>setProfileOpen(false)} style={{marginTop:8,width:"100%",padding:8,borderRadius:8,background:"#1e40af",color:"#fff",border:"none"}}>Fermer</button></div></div>)}
 {notifOpen && (<div style={{position:"fixed",inset:0,zIndex:70,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"flex-end"}}><div style={{background:"#fff",width:"100%",borderRadius:"16px 16px 0 0",padding:12,maxHeight:"80vh",overflowY:"auto"}}><div style={{fontWeight:900}}>🔔 Notifications Officielles GDB • Historique Opérations</div><div style={{marginTop:8,display:"flex",flexDirection:"column",gap:6,fontSize:11}}><div style={{background:"#eff6ff",padding:8,borderRadius:8}}>📢 Pi DEX 10+ paires actives • APY 15%</div><div style={{background:"#f0fdf4",padding:8,borderRadius:8}}>✅ Virement instantané {gdb.slice(0,8)}</div><div style={{background:"#fef3c7",padding:8,borderRadius:8}}>⚠️ KYC: Liez adresse G...</div></div><button onClick={()=>setNotifOpen(false)} style={{marginTop:8,width:"100%",padding:8,borderRadius:8,background:"#1e40af",color:"#fff",border:"none"}}>Fermer</button></div></div>)}
 {m && (<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:80,display:"flex",alignItems:"flex-end"}}><div style={{background:"#f8fafc",width:"100%",borderRadius:"16px 16px 0 0",padding:10,maxHeight:"92vh",overflowY:"auto",borderTop:"3px solid #facc15"}}><div style={{display:"flex",justifyContent:"space-between",background:"#1e40af",color:"#fff",padding:8,borderRadius:10}}><div style={{fontWeight:900,fontSize:10}}>{gdb} • {m} {piUser && `• ${piUser} KYC ✅`}</div><button onClick={()=>setM("")} style={{border:"none",background:"rgba(255,255,255,0.2)",color:"#fff",borderRadius:20,width:26,height:26}}>X</button></div><div style={{background:"#fff",borderRadius:12,padding:10,marginTop:8}}>
-{m==="transferer" && <Transferer gdb={gdb} />}
+{m==="transferer" && <TransfertModule gdb={gdb} />}
 {m==="virement" && <Virement gdb={gdb} />}
 {m==="pidex" && <PiDex gdb={gdb} />}
 {m==="cartes" && <Cartes gdb={gdb} rcv={rcv} />}
