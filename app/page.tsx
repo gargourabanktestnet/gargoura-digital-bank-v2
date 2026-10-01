@@ -1,64 +1,42 @@
-// @ts-nocheck
 "use client"
-import { useState,useEffect } from "react"
-import { Transferer,Virement,PiDex,Cartes,KYCComp,ConvertirComp,TradingComp,AIAutoComp,BlockchainComp,ShoppingComp,PortefeuilleComp,AutomobileComp,AgregationComp,GestionComp } from "./Components"
-const gen=()=> "GDB-"+new Date().getFullYear()+"-"+Math.floor(100000+Math.random()*900000)
-const genRcv=()=> "GDB-RCV-"+Math.floor(10000000+Math.random()*90000000)
-const LANGS=["FR","EN","AR","ES","ZH","HA"]
-const ICONS={transferer:"💸",virement:"🏦",pidex:"🔄",convertir:"💱",trading:"📈",aiauto:"🤖",blockchain:"⛓️",shopping:"🛒",portefeuilles:"👛",automobile:"🚗",agregation:"🔗",gestion:"⚙️"}
+import { useState, useEffect } from "react"
+import { Transferer, Virement, PiDex, ConvertirComp, TradingComp, PortefeuilleComp, Cartes, KYCComp, AIAutoComp, BlockchainComp, ShoppingComp, AutomobileComp, AgregationComp, GestionComp } from "./Components"
+
 export default function Page(){
-const [gdb,setGdb]=useState("GDB-2026-433422"),[rcv,setRcv]=useState(""),[m,setM]=useState(""),[menuOpen,setMenuOpen]=useState(false),[langOpen,setLangOpen]=useState(false),[profileOpen,setProfileOpen]=useState(false),[notifOpen,setNotifOpen]=useState(false),[lang,setLang]=useState("FR"),[piUser,setPiUser]=useState(""),[kyc,setKyc]=useState(false),[guide,setGuide]=useState(""),[cond,setCond]=useState(""),[pol,setPol]=useState(""),[saved,setSaved]=useState(false)
+const [tab,setTab]=useState("portefeuille")
+const [gdb,setGdb]=useState("GDB-TEST-1234")
+const [rcv,setRcv]=useState("RCV-5678")
+const [kycOk,setKycOk]=useState(false)
+
 useEffect(()=>{
-try{
-let x=localStorage.getItem("gdb_account"); if(!x){x=gen(); localStorage.setItem("gdb_account",x)} setGdb(x)
-let r=localStorage.getItem("gdb_receive_code"); if(!r){r=genRcv(); localStorage.setItem("gdb_receive_code",r)} setRcv(r)
-let pu=localStorage.getItem("gdb_pi_user"); let kv=localStorage.getItem("gdb_kyc_verified"); if(pu && kv==="true"){setPiUser(pu); setKyc(true)}
-setGuide(localStorage.getItem("gdb_guide")||"1. Créer compte GDB 2. QR permanent 3. Envoyer/Recevoir instantané • Pi 314159")
-setCond(localStorage.getItem("gdb_cond")||"Utilisation conforme ISO20022, frais 0.3% + GDB, transactions instantanées interopérables.")
-setPol(localStorage.getItem("gdb_pol")||"Données chiffrées localement, jamais partagées. GDB unique par appareil. Conforme normes internationales.")
-let s=document.createElement("script"); s.src="https://sdk.minepi.com/pi-sdk.js"; s.onload=()=>{try{window.Pi&&window.Pi.init({version:"2.0"})}catch{}}; document.head.appendChild(s)
-}catch{}
+const a=localStorage.getItem("gdb_pi_addr")
+if(a) setKycOk(true)
 },[])
-function saveAll(){localStorage.setItem("gdb_guide",guide); localStorage.setItem("gdb_cond",cond); localStorage.setItem("gdb_pol",pol); setSaved(true); setTimeout(()=>setSaved(false),2000)}
-const funcs=[["transferer","Transférer"],["virement","Virement"],["pidex","Pi DEX"],["convertir","Convertir"],["trading","Trading"],["aiauto","AI Auto"],["blockchain","Blockchain"],["shopping","Shopping"],["portefeuilles","Portefeuilles"],["automobile","Automobile"],["agregation","Agrégation"],["gestion","Gestion"]]
-const qr=`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(rcv+"|"+gdb)}`
+
 return(
-<div style={{minHeight:"100vh",background:"#f8fafc",fontFamily:"system-ui",paddingBottom:110}}>
-<div style={{background:"#1e40af",color:"#fff",padding:"10px 12px",position:"sticky",top:0,zIndex:30,borderBottom:"3px solid #facc15",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<button onClick={()=>setMenuOpen(true)} style={{background:"#facc15",color:"#1e40af",border:"none",borderRadius:8,padding:"6px 10px",fontWeight:900}}>☰ MENU</button>
-<div style={{display:"flex",gap:6}}><button onClick={()=>setLangOpen(true)} style={{background:"rgba(255,255,255,0.2)",border:"none",borderRadius:20,width:30,height:30}}>🌍</button><button onClick={()=>setProfileOpen(true)} style={{background:"rgba(255,255,255,0.2)",border:"none",borderRadius:20,width:30,height:30}}>👤</button><button onClick={()=>setNotifOpen(true)} style={{background:"rgba(255,255,255,0.2)",border:"none",borderRadius:20,width:30,height:30,position:"relative"}}>🔔<span style={{position:"absolute",top:-4,right:-4,background:"#ef4444",color:"#fff",borderRadius:10,padding:"1px 4px",fontSize:8}}>3</span></button></div>
+<div style={{maxWidth:420,margin:"0 auto",background:"#fff",minHeight:"100vh",fontFamily:"sans-serif"}}>
+<div style={{background:"#1e40af",color:"#fff",padding:14,textAlign:"center",fontWeight:900}}>GARGOURA DIGITAL BANK v2 • PI 314159$</div>
+<div style={{display:"flex",flexWrap:"wrap",gap:6,padding:8,background:"#f1f5f9"}}>
+{["portefeuille","transferer","virement","pidex","convertir","trading","cartes","kyc","ai","block","shopping","auto","agreg","gestion"].map(t=>(
+<button key={t} onClick={()=>setTab(t)} style={{padding:"6px 8px",borderRadius:8,border:"none",fontSize:10,fontWeight:800,background:tab===t?"#1e40af":"#fff",color:tab===t?"#fff":"#475569"}}>{t.toUpperCase()}</button>
+))}
 </div>
-<div style={{padding:12,display:"flex",flexDirection:"column",gap:10}}>
-<div style={{background:"#fff",border:"2px solid #facc15",borderRadius:20,padding:14,display:"flex",flexDirection:"column",alignItems:"center"}}><img src="/logo.png" alt="GDB" onError={e=>e.currentTarget.style.display="none"} style={{width:80,height:80,borderRadius:40,border:"3px solid #facc15"}}/><div style={{fontWeight:900,marginTop:8,fontSize:14}}>GARGOURA DIGITAL BANK</div><div style={{fontSize:9,color:"#64748b",textAlign:"center",marginTop:2}}>{gdb} {kyc && piUser? <span style={{color:"#16a34a",fontWeight:900}}>• {piUser} • KYC Vérifié ✅</span> : <span>• KYC non vérifié</span>} • ISO20022 • 🌍 Mondiale</div></div>
-<div style={{background:"#1e3a8a",borderRadius:16,padding:12,color:"#fff"}}><div style={{fontSize:11}}>Solde Total • {gdb.slice(0,12)} {kyc && <span style={{color:"#facc15"}}>• {piUser}</span>}</div><div style={{fontWeight:900,fontSize:20,marginTop:4}}>1 PI = 314 159,00 USD (GCV)</div><div style={{fontSize:9,color:"#86efac",marginTop:4}}>Code Réception permanent + QR • Stockage téléphone</div><div style={{display:"flex",gap:6,marginTop:10}}><button onClick={()=>setM("transferer")} style={{flex:1,background:"#16a34a",color:"#fff",border:"none",borderRadius:20,padding:9,fontWeight:800}}>Envoyer</button><button onClick={()=>setM("recevoir")} style={{flex:1,background:"#fff",color:"#1e3a8a",border:"none",borderRadius:20,padding:9,fontWeight:800}}>Recevoir QR</button></div></div>
-<div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:14,padding:10}}><div style={{fontWeight:900,fontSize:12}}>Fonctionnalités Courantes • 12</div><div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginTop:8}}>{funcs.map(([id,label])=><button key={id} onClick={()=>setM(id)} style={{border:"1px solid #e2e8f0",background:"#fff",borderRadius:10,padding:8,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}><div style={{fontSize:16}}>{ICONS[id]}</div><div style={{fontSize:8,fontWeight:800}}>{label}</div></button>)}</div><div style={{display:"flex",gap:6,marginTop:10}}><button onClick={()=>setM("pidex")} style={{flex:1,padding:8,borderRadius:20,background:"#1e40af",color:"#fff",border:"none",fontWeight:800,fontSize:10}}>Swapper</button><button onClick={()=>setM("portefeuilles")} style={{flex:1,padding:8,borderRadius:20,background:"#fff",border:"1px solid #1e40af",color:"#1e40af",fontWeight:800,fontSize:10}}>Retirer</button><button onClick={()=>setM("portefeuilles")} style={{flex:1,padding:8,borderRadius:20,background:"#fff",border:"1px solid #1e40af",color:"#1e40af",fontWeight:800,fontSize:10}}>Déposer</button><button onClick={()=>setM("portefeuilles")} style={{flex:1,padding:8,borderRadius:20,background:"#fff",border:"1px solid #16a34a",color:"#16a34a",fontWeight:800,fontSize:10}}>Airtime</button></div></div>
+<div style={{padding:12}}>
+{tab==="portefeuille"&&<PortefeuilleComp gdb={gdb} rcv={rcv} />}
+{tab==="transferer"&&<Transferer gdb={gdb} />}
+{tab==="virement"&&<Virement gdb={gdb} />}
+{tab==="pidex"&&<PiDex gdb={gdb} />}
+{tab==="convertir"&&<ConvertirComp />}
+{tab==="trading"&&<TradingComp />}
+{tab==="cartes"&&<Cartes gdb={gdb} rcv={rcv} />}
+{tab==="kyc"&&<KYCComp gdb={gdb} onVerified={()=>setKycOk(true)} />}
+{tab==="ai"&&<AIAutoComp />}
+{tab==="block"&&<BlockchainComp />}
+{tab==="shopping"&&<ShoppingComp />}
+{tab==="auto"&&<AutomobileComp />}
+{tab==="agreg"&&<AgregationComp />}
+{tab==="gestion"&&<GestionComp />}
 </div>
-<div style={{position:"fixed",bottom:0,left:0,right:0,background:"#fff",borderTop:"3px solid #facc15",zIndex:40,display:"flex",justifyContent:"space-around",padding:"6px 2px"}}>
-<button onClick={()=>{setM("");}} style={{border:"none",background:"none",fontSize:8,color:"#1e40af",display:"flex",flexDirection:"column",alignItems:"center"}}><div style={{fontSize:16}}>🏠</div>Accueil</button>
-<button onClick={()=>setM("transferer")} style={{border:"none",background:"none",fontSize:8,color:"#64748b",display:"flex",flexDirection:"column",alignItems:"center"}}><div style={{fontSize:16}}>💼</div>Services</button>
-<button onClick={()=>setM("pidex")} style={{border:"none",background:"none",fontSize:8,color:"#64748b",display:"flex",flexDirection:"column",alignItems:"center"}}><div style={{fontSize:16}}>🚀</div>Innovation</button>
-<button onClick={()=>setM("portefeuilles")} style={{border:"none",background:"none",fontSize:8,color:"#64748b",display:"flex",flexDirection:"column",alignItems:"center"}}><div style={{fontSize:16}}>👛</div>Wallet</button>
-<button onClick={()=>setM("kyc")} style={{border:"none",background:"none",fontSize:8,color:"#64748b",display:"flex",flexDirection:"column",alignItems:"center"}}><div style={{fontSize:16}}>🛡️</div>Sécurité</button>
-<button onClick={()=>setM("support")} style={{border:"none",background:"none",fontSize:8,color:"#64748b",display:"flex",flexDirection:"column",alignItems:"center"}}><div style={{fontSize:16}}>❓</div>Support</button>
-</div>
-{m && (<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:80,display:"flex",alignItems:"flex-end"}}><div style={{background:"#f8fafc",width:"100%",borderRadius:"16px 16px 0 0",padding:10,maxHeight:"92vh",overflowY:"auto",borderTop:"3px solid #facc15"}}><div style={{display:"flex",justifyContent:"space-between",background:"#1e40af",color:"#fff",padding:8,borderRadius:10}}><div style={{fontWeight:900,fontSize:10}}>{gdb} • {m} {piUser && `• ${piUser} KYC ✅`}</div><button onClick={()=>setM("")} style={{border:"none",background:"rgba(255,255,255,0.2)",color:"#fff",borderRadius:20,width:26,height:26}}>X</button></div><div style={{background:"#fff",borderRadius:12,padding:10,marginTop:8}}>
-{m==="transferer" && <Transferer gdb={gdb} />}
-{m==="virement" && <Virement gdb={gdb} />}
-{m==="pidex" && <PiDex gdb={gdb} />}
-{m==="cartes" && <Cartes gdb={gdb} rcv={rcv} />}
-{m==="kyc" && <KYCComp gdb={gdb} onVerified={(u)=>{setPiUser(u); setKyc(true)}} />}
-{m==="convertir" && <ConvertirComp gdb={gdb} />}
-{m==="trading" && <TradingComp />}
-{m==="aiauto" && <AIAutoComp />}
-{m==="blockchain" && <BlockchainComp />}
-{m==="shopping" && <ShoppingComp />}
-{m==="portefeuilles" && <PortefeuilleComp gdb={gdb} rcv={rcv} />}
-{m==="automobile" && <AutomobileComp />}
-{m==="agregation" && <AgregationComp />}
-{m==="gestion" && <GestionComp />}
-{m==="recevoir" && (<div style={{display:"flex",flexDirection:"column",gap:8,alignItems:"center"}}><div style={{fontWeight:900}}>Recevoir • QR Code Permanent • Adresse Réception</div><img src={qr} alt="QR" style={{width:200,height:200,border:"3px solid #facc15",borderRadius:12}}/><div style={{background:"#1e40af",color:"#fff",padding:10,borderRadius:8,fontWeight:900,fontSize:10}}>{rcv}</div><div style={{fontSize:9,color:"#64748b",textAlign:"center"}}>QR lié au compte {gdb} • Stocké définitivement stockage téléphone • {piUser && `${piUser} KYC ✅`}</div></div>)}
-{m==="support" && (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{fontWeight:900}}>Support 24/7 • Contact GDB</div><div style={{fontSize:11}}>📞 Interne: (+235) 92 82 52 62<br/>💬 WhatsApp: (+235) 66 78 75 46<br/>📧 gargouradigitalbank@gmail.com</div></div>)}
-</div></div></div>)}
 </div>
 )
 }
