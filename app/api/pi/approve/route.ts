@@ -1,24 +1,38 @@
-import { NextResponse } from "next/server"
+export const runtime = 'edge'
 
 export async function POST(req: Request) {
-  const { paymentId, mode } = await req.json()
-  const envMode = mode || process.env.PI_ENV || "testnet"
-  const isMainnet = envMode === "mainnet"
-  const apiKey = isMainnet ? process.env.PI_API_KEY_MAINNET : process.env.PI_API_KEY_TESTNET
-  const apiUrl = isMainnet ? "https://api.minepi.com" : "https://api.test-minepi.com"
+  try {
+    const { paymentId, mode } = await req.json()
+    const envMode = (mode || "testnet").toLowerCase()
+    const isMainnet = envMode === "mainnet"
+    
+    const apiKey = isMainnet ? process.env.PI_API_KEY_MAINNET : process.env.PI_API_KEY_TESTNET
+    const apiUrl = isMainnet ? "https://api.minepi.com" : "https://api.test-minepi.com"
 
-  // REPONSE IMMEDIATE pour ne jamais expirer - on appelle Pi en arriere plan
-  if (!apiKey || apiKey.startsWith("sk_live") || apiKey.startsWith("sk_test")) {
-    console.log("Mode simulation GARGOURA - cle non Pi ou absente")
-    return NextResponse.json({ ok: true, simulated: true, mode: envMode })
+    console.log(`GDB APPROVE ${envMode} ${paymentId} key:${apiKey ? apiKey.slice(0,8)+"..." : "MANQUANTE"}`)
+
+    if (!apiKey) {
+      // Pas de clé = on simule pour former sans expirer
+      return new Response(JSON.stringify({ ok: true, simulated: true, mode: envMode }), { status: 200, headers: { "Content-Type": "application/json" } })
+    }
+
+    // LANCE L'APPROVE SANS ATTENDRE - c'est ça qui sauve
+    fetch(`${apiUrl}/v2/payments/${paymentId}/approve`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Key ${apiKey}`,
+        "Content-Type": "application/json"
+      }
+    }).then(async r => {
+      const d = await r.text()
+      console.log("Pi approve result:", r.status, d)
+    }).catch(e => console.error("Pi approve error", e))
+
+    // REPONSE IMMEDIATE <300ms - Pi Browser ne voit plus "expiré"
+    return new Response(JSON.stringify({ ok: true, mode: envMode, fast: true }), { status: 200, headers: { "Content-Type": "application/json" } })
+
+  } catch (e: any) {
+    console.error(e)
+    return new Response(JSON.stringify({ error: e.message }), { status: 200 })
   }
-
-  // Lancement async sans attendre trop longtemps
-  fetch(`${apiUrl}/v2/payments/${paymentId}/approve`, {
-    method: "POST",
-    headers: { "Authorization": `Key ${apiKey}` }
-  }).then(r=>r.json()).then(d=>console.log("Pi approve OK", d)).catch(e=>console.error(e))
-
-  // On repond tout de suite en moins de 1 seconde - Pi ne va pas expirer
-  return NextResponse.json({ ok: true, mode: envMode, fast: true })
 }
