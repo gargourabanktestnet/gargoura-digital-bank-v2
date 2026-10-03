@@ -17,6 +17,7 @@ const [zone,setZone]=useState("CEMAC")
 const [piReady,setPiReady]=useState(false)
 const [paying,setPaying]=useState(false)
 const [piMode,setPiMode]=useState<"testnet"|"mainnet">("testnet")
+const [piInput,setPiInput]=useState("0.00025") // <-- MICRONS AJOUT
 
 const allFeatures=[
  {name:"Paiement Pi Reel GCV 314159$", tab:"paiement", key:"pi"},
@@ -65,11 +66,14 @@ const handlePiPayment = async (amount:number, memo:string)=>{
  if(paying) return
  setPaying(true)
  try{
+   // si amount vient de l'input microns, on s'assure du parseFloat
+   const finalAmount = isNaN(amount)? parseFloat(piInput) : amount
+   if(finalAmount < 0.0000001){ alert("Min 0.0000001 Pi"); setPaying(false); return }
    if(typeof window!=="undefined" && window.Pi){
      const scopes=["payments","username","wallet_address"]
      await window.Pi.authenticate(scopes, ()=>{})
      await window.Pi.createPayment({
-       amount: amount,
+       amount: finalAmount,
        memo: memo + " - GARGOURA DIGITAL BANK ["+piMode.toUpperCase()+"]",
        metadata: {gdb_addr:gdbAddr, zone:zone, mode:piMode}
      },{
@@ -87,14 +91,14 @@ const handlePiPayment = async (amount:number, memo:string)=>{
            headers:{"Content-Type":"application/json"},
            body:JSON.stringify({paymentId, txid, mode:piMode})
          })
-         alert("✅ Paiement "+piMode.toUpperCase()+" confirme!\nGARGOURA DIGITAL BANK\nTx: "+txid+"\nMontant: "+amount+" PI\nGCV: "+(amount*314159).toLocaleString()+" $")
+         alert("✅ Paiement "+piMode.toUpperCase()+" confirme!\nGARGOURA DIGITAL BANK\nTx: "+txid+"\nMontant: "+finalAmount+" PI\nGCV: "+(finalAmount*314159).toLocaleString()+" $")
          setPaying(false)
        },
        onCancel: ()=>{ setPaying(false) },
        onError: (err:any)=>{ alert("Erreur Pi: "+(err?.message||JSON.stringify(err))); setPaying(false) }
      })
    }else{
-     alert("⚠️ Ouvre dans Pi Browser pour paiement REEL.\nMode: "+piMode+"\nSimulation: "+amount+" PI pour "+memo)
+     alert("⚠️ Ouvre dans Pi Browser pour paiement REEL.\nMode: "+piMode+"\nSimulation: "+finalAmount+" PI pour "+memo)
      setPaying(false)
    }
  }catch(e:any){ alert("Erreur: "+e.message); setPaying(false) }
@@ -179,7 +183,16 @@ return(
 {piMode==="testnet"? "Formation sans valeur - Ideal pour apprendre au Tchad" : "Mode Reel - Vrai Pi Mainnet deplace - GCV 314159$"}
 </div>
 
-<button onClick={()=>handlePiPayment(1, "Recharge test GARGOURA DIGITAL BANK")} style={{width:"100%", marginTop:12, padding:12, borderRadius:10, background:piReady? (piMode==="testnet"?"#1e3a8a":"#C9A86A") : "#64748b", color:piMode==="testnet"?"#fff":"#0A1931", fontWeight:900, border:"none", fontSize:11}}>{paying? "⏳ Paiement "+piMode+" en cours..." : (piMode==="testnet"? "🧪 PAYER 1 PI TESTNET - FORMATION" : "💎 PAYER 1 PI MAINNET - REEL GCV")}</button>
+{/* BLOC MICRONS AJOUTE ICI */}
+<div style={{background:"rgba(255,255,255,0.08)", borderRadius:12, padding:10, marginTop:10, border:"1px dashed #C9A86A"}}>
+<div style={{color:"#C9A86A", fontSize:9, fontWeight:800}}>MONTANT MICRONS PI (0.00025 etc)</div>
+<input value={piInput} onChange={e=>setPiInput(e.target.value)} type="number" step="0.0000001" min="0.0000001" placeholder="0.00025" style={{width:"100%", marginTop:6, padding:10, borderRadius:8, border:"1px solid #C9A86A", background:"#0A1931", color:"#fff", fontSize:11}} />
+<div style={{display:"flex", gap:4, marginTop:6}}>
+{["0.00025","0.0015","0.01","1"].map(v=><button key={v} onClick={()=>setPiInput(v)} style={{flex:1, padding:6, borderRadius:6, border:"none", background:piInput===v?"#C9A86A":"#fff", color:"#0A1931", fontSize:8, fontWeight:800}}>{v}</button>)}
+</div>
+</div>
+
+<button onClick={()=>handlePiPayment(parseFloat(piInput)||0.00025, "Recharge test GARGOURA DIGITAL BANK")} style={{width:"100%", marginTop:12, padding:12, borderRadius:10, background:piReady? (piMode==="testnet"?"#1e3a8a":"#C9A86A") : "#64748b", color:piMode==="testnet"?"#fff":"#0A1931", fontWeight:900, border:"none", fontSize:11}}>{paying? "⏳ Paiement "+piMode+" en cours..." : (piMode==="testnet"? `🧪 PAYER ${piInput} PI TESTNET` : `💎 PAYER ${piInput} PI MAINNET REEL`)}</button>
 </div>
 <div style={{padding:12}}>
 <div style={{background:"#fff", borderRadius:12, padding:10, border:"1px solid #e2e8f0", textAlign:"center"}}>
@@ -206,16 +219,11 @@ return(
 <div style={{background:"#fff", borderRadius:12, padding:12, marginTop:8, border:"1px solid #e2e8f0"}}>
 <select style={{width:"100%", padding:10, borderRadius:8, border:"1px solid #e2e8f0", fontSize:10}}>{zones[zone].map((p:string)=><option key={p}>{p}</option>)}</select>
 <input placeholder="Adresse PI G... / IBAN / Numero MoMo" style={{width:"100%", marginTop:8, padding:10, borderRadius:8, border:"1px solid #e2e8f0", fontSize:10}} />
-<input id="piAmount" placeholder={piMode==="testnet"? "Montant Testnet ex 5" : "Montant Reel ex 1 PI = 314159$"} style={{width:"100%", marginTop:8, padding:10, borderRadius:8, border:"1px solid #e2e8f0", fontSize:10}} />
+<input value={piInput} onChange={e=>setPiInput(e.target.value)} type="number" step="0.0000001" placeholder={piMode==="testnet"? "Montant Testnet ex 0.00025" : "Montant Reel ex 0.0015 PI"} style={{width:"100%", marginTop:8, padding:10, borderRadius:8, border:"1px solid #C9A86A", fontSize:10}} />
 <div style={{display:"flex", gap:6, marginTop:10}}>
-<button onClick={()=>{const el=document.getElementById("piAmount") as HTMLInputElement; const amt=parseFloat(el?.value||"1")||1; handlePiPayment(amt, "Paiement P2P "+zone+" "+piMode)}} style={{flex:1, padding:12, borderRadius:10, background:piMode==="testnet"?"#1e3a8a":"#0A1931", color:piMode==="testnet"?"#fff":"#C9A86A", fontWeight:900, border:"none", fontSize:10}}>🟣 Envoyer {piMode.toUpperCase()} PI {zone}</button>
+<button onClick={()=>{const amt=parseFloat(piInput)||0.00025; handlePiPayment(amt, "Paiement P2P "+zone+" "+piMode)}} style={{flex:1, padding:12, borderRadius:10, background:piMode==="testnet"?"#1e3a8a":"#0A1931", color:piMode==="testnet"?"#fff":"#C9A86A", fontWeight:900, border:"none", fontSize:10}}>🟣 Envoyer {piInput} PI {zone}</button>
 <button onClick={()=>alert("Mobile Money Tchad via CinetPay\nAPI: /api/momo/send\n"+piMode)} style={{flex:1, padding:12, borderRadius:10, background:"#22c55e", color:"#fff", fontWeight:900, border:"none", fontSize:10}}>📱 MoMo {zone}</button>
 </div>
-</div>
-
-<div style={{background:"linear-gradient(135deg,#14532d,#22c55e)", borderRadius:12, padding:12, marginTop:10, color:"#fff"}}>
-<div style={{fontWeight:900, fontSize:11}}>Mobile Money • 15 Operateurs • CinetPay</div>
-<div style={{fontSize:8, marginTop:6}}>Orange MTN Wave Moov Airtel M-Pesa STC Pay Jawwal • Delai {"<30s"} • Frais 0.8% • Mode {piMode.toUpperCase()}</div>
 </div>
 </div>
 )}
@@ -245,23 +253,12 @@ return(
 <div style={{display:"flex", gap:4, alignItems:"flex-end", height:50, marginTop:8}}>{[40,70,55,90,60,80].map((h,i)=><div key={i} style={{flex:1, background:i===3? "#C9A86A" : "#0A1931", height:h+"%", borderRadius:4}}></div>)}</div>
 <div style={{fontSize:8, marginTop:6}}>Vacances 450/800 PI • Alerte si {" >10%"} depassement</div>
 </div>
-<div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:8}}>
-<div style={{background:"#0A1931", color:"#F9E2AF", borderRadius:12, padding:12}}><div style={{fontSize:9}}>Coffre Arrondi Auto</div><div style={{fontSize:9, marginTop:4, color:"#fff"}}>12.3 PI → 13 PI, 0.7 PI en cagnotte • 87.5 PI bloque</div></div>
-<div style={{background:"#fff", borderRadius:12, padding:12, border:"1px solid #e2e8f0"}}><div style={{fontSize:9}}>Micro-credit 50-5000 PI • Halal • {piMode.toUpperCase()}</div><button onClick={()=>handlePiPayment(50, "Micro-credit Halal "+piMode)} style={{width:"100%", marginTop:6, padding:8, borderRadius:8, background:"#10b981", color:"#fff", border:"none", fontSize:9, fontWeight:800}}>Demander 50 PI {piMode.toUpperCase()}</button></div>
-</div>
 </div>
 )}
 
 {tab==="plus" && (
 <div style={{padding:12}}>
 <div style={{background:"#0A1931", borderRadius:12, padding:12, color:"#fff", display:"flex", gap:10}}><img src="/logo.png" style={{width:44, height:44, borderRadius:10, background:"#fff"}} alt="logo" /><div><div style={{color:"#F9E2AF", fontWeight:900}}>GARGOURA DIGITAL BANK • {piMode.toUpperCase()}</div><div style={{fontSize:9}}>{gdbAddr.slice(0,20)}... • {kycOk? "✅ RGPD" : "KYC"}</div></div></div>
-<div style={{background:"#fff", borderRadius:12, padding:12, marginTop:10, border:"1px solid #e2e8f0"}}>
-<div style={{fontWeight:900, fontSize:10}}>Multi-devises FX • 12 devises • {piMode.toUpperCase()}</div><div style={{fontSize:8, marginTop:4}}>USD EUR XAF JOD AED • Taux reel • Frais 0.43% • IBAN virtuel</div>
-</div>
-<div style={{background:"#fff", borderRadius:12, padding:12, marginTop:10, border:"1px solid #e2e8f0"}}>
-<div style={{fontWeight:900, fontSize:10}}>RGPD PCI-DSS FaceID</div><div style={{fontSize:8, marginTop:4}}>AES-256, tokenisation, 3D Secure, ISO20022</div><button onClick={()=>setKycOk(true)} style={{marginTop:8, width:"100%", padding:10, borderRadius:8, background:kycOk? "#10b981" : "#0A1931", color:"#fff", border:"none", fontWeight:900, fontSize:10}}>{kycOk? "✅ Securise" : "Activer KYC"}</button>
-</div>
-<div style={{background:"linear-gradient(135deg,#fef3c7,#fde68a)", borderRadius:12, padding:12, marginTop:10}}><div style={{fontWeight:900, fontSize:10, color:"#92400e"}}>Halal Sans Riba • Vert ESG • {piMode.toUpperCase()}</div><div style={{fontSize:8, color:"#78350f", marginTop:4}}>Mudaraba Musharaka Murabaha • AAOIFI • Zakat 2.5% • ESG 8.5</div></div>
 </div>
 )}
 
