@@ -32,4 +32,4 @@ export async function POST(req: Request) {
     console.error("[GARGOURA] Approve error", e.message)
     return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { "Content-Type": "application/json" } })
   }
-     }
+}
