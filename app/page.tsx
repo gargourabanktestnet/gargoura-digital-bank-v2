@@ -14,6 +14,7 @@ const [kycOk,setKycOk]=useState(false)
 const [showCVV,setShowCVV]=useState(false)
 const [blocked,setBlocked]=useState([false,false,false])
 const [zone,setZone]=useState("CEMAC")
+const [momoOp,setMomoOp]=useState("Orange Money")
 const [piReady,setPiReady]=useState(false)
 const [paying,setPaying]=useState(false)
 const [piMode,setPiMode]=useState<"testnet"|"mainnet">("testnet")
@@ -23,7 +24,8 @@ const allFeatures=[
  {name:"Mobile Money Orange MTN Wave Moov", tab:"paiement", key:"momo"},
  {name:"Virement CEMAC BEAC Tchad", tab:"paiement", key:"cemac"},
  {name:"Virement UEMOA Senegal", tab:"paiement", key:"uemoa"},
- {name:"Virement Jordanie Golfe", tab:"paiement", key:"jordanie"},
+ {name:"Virement Jordanie Golfe Moyen-Orient", tab:"paiement", key:"jordanie"},
+ {name:"Virement INTERNATIONAL SWIFT", tab:"paiement", key:"intl"},
  {name:"Carte VISA Bloquer Debloquer", tab:"cartes", key:"visa"},
  {name:"Carte GOLD Premium", tab:"cartes", key:"gold"},
  {name:"Coffre Arrondi Auto Vacances", tab:"epargne", key:"coffre"},
@@ -33,6 +35,28 @@ const allFeatures=[
  {name:"Support 24/7 Chat", tab:"plus", key:"support"},
 ]
 const filtered = search? allFeatures.filter(f=>f.name.toLowerCase().includes(search.toLowerCase())) : []
+
+// ZONES OFFICIELLES GARGOURA 7 ZONES - NE PAS CASSER
+const zones:any={
+ "CEMAC":["Tchad BEAC","Cameroun BICEC","Gabon BGFI","Congo","RCA","Guinee Eq"],
+ "UEMOA":["Senegal","Cote d'Ivoire","Mali","Burkina","Benin","Togo","Niger"],
+ "DOLLAR":["USA Chase","USA BoA","Canada RBC"],
+ "JORDANIE":["Jordan Ahli Bank","Arab Bank JO","Housing Bank JO"],
+ "GOLFE":["UAE FAB","Saudi Al Rajhi","Qatar QNB","Kuwait NBK","Bahrein NBB","Oman Bank Muscat"],
+ "MOYEN-ORIENT":["Turquie Ziraat","Liban Byblos","Egypte NBE","Qatar Ooredoo","Kuwait"],
+ "INTERNATIONAL":["UK Barclays","France BNP SEPA","Allemagne Deutsche","Chine ICBC","Inde SBI","SWIFT MONDIAL"]
+}
+
+// NOUVEAU - OPERATEURS MOBILE MONEY PAR ZONE ECONOMIQUE - CIRCULATION ARGENT
+const zoneMoMo:any={
+ "CEMAC":{ops:["Orange Money","MTN MoMo","Airtel Money","Moov Money"], cur:"XAF", flag:"🇹🇩", fee:"0.8%", delay:"<30s"},
+ "UEMOA":{ops:["Wave","Orange Money","MTN MoMo","Moov Money","M-Pesa"], cur:"XOF", flag:"🇸🇳", fee:"0.6%", delay:"<20s"},
+ "DOLLAR":{ops:["CashApp","Zelle","Venmo","Apple Cash"], cur:"USD", flag:"🇺🇸", fee:"0.43%", delay:"<60s"},
+ "JORDANIE":{ops:["Zain Cash","Orange Money JO","Dinarak","CliQ"], cur:"JOD", flag:"🇯🇴", fee:"0.7%", delay:"<30s"},
+ "GOLFE":{ops:["STC Pay","Jawwal Pay","Careem Pay","Etisalat Wallet"], cur:"SAR", flag:"🇸🇦", fee:"0.5%", delay:"<25s"},
+ "MOYEN-ORIENT":{ops:["Ooredoo Money","Vodafone Cash","Fawry","PayPal MENA"], cur:"QAR", flag:"🌍", fee:"0.65%", delay:"<35s"},
+ "INTERNATIONAL":{ops:["SWIFT GPI","IBAN Virtuel","VISA Direct","SEPA Instant","Stellar USDC"], cur:"USD/EUR", flag:"🌐", fee:"0.43%", delay:"<24h SWIFT / <10s SEPA"}
+}
 
 useEffect(()=>{
  const s=document.createElement("script")
@@ -61,6 +85,12 @@ useEffect(()=>{
  }
 },[piMode])
 
+useEffect(()=>{
+ // auto select premier operateur de la zone
+ const first = zoneMoMo[zone]?.ops?.[0]
+ if(first) setMomoOp(first)
+},[zone])
+
 const handlePiPayment = async (amount:number, memo:string)=>{
  if(paying) return
  setPaying(true)
@@ -70,8 +100,8 @@ const handlePiPayment = async (amount:number, memo:string)=>{
      await window.Pi.authenticate(scopes, ()=>{})
      await window.Pi.createPayment({
        amount: amount,
-       memo: memo + " - GARGOURA DIGITAL BANK ["+piMode.toUpperCase()+"]",
-       metadata: {gdb_addr:gdbAddr, zone:zone, mode:piMode}
+       memo: memo + " - GARGOURA DIGITAL BANK ["+piMode.toUpperCase()+"] ["+zone+"]",
+       metadata: {gdb_addr:gdbAddr, zone:zone, momo_op:momoOp, mode:piMode}
      },{
        onReadyForServerApproval: async (paymentId:string)=>{
          const r = await fetch("/api/pi/approve",{
@@ -87,14 +117,14 @@ const handlePiPayment = async (amount:number, memo:string)=>{
            headers:{"Content-Type":"application/json"},
            body:JSON.stringify({paymentId, txid, mode:piMode})
          })
-         alert("✅ Paiement "+piMode.toUpperCase()+" confirme!\nGARGOURA DIGITAL BANK\nTx: "+txid+"\nMontant: "+amount+" PI\nGCV: "+(amount*314159).toLocaleString()+" $")
+         alert("✅ Paiement "+piMode.toUpperCase()+" confirme!\nGARGOURA DIGITAL BANK\nZone: "+zone+" | "+momoOp+"\nTx: "+txid+"\nMontant: "+amount+" PI\nGCV: "+(amount*314159).toLocaleString()+" $")
          setPaying(false)
        },
        onCancel: ()=>{ setPaying(false) },
        onError: (err:any)=>{ alert("Erreur Pi: "+(err?.message||JSON.stringify(err))); setPaying(false) }
      })
    }else{
-     alert("⚠️ Ouvre dans Pi Browser pour paiement REEL.\nMode: "+piMode+"\nSimulation: "+amount+" PI pour "+memo)
+     alert("⚠️ Ouvre dans Pi Browser pour paiement REEL.\nMode: "+piMode+"\nSimulation: "+amount+" PI pour "+memo+" ["+zone+" / "+momoOp+"]")
      setPaying(false)
    }
  }catch(e:any){ alert("Erreur: "+e.message); setPaying(false) }
@@ -107,16 +137,6 @@ const wallets=[
  {id:"xaf", name:"XAF CEMAC BEAC", bal:"24,500,000 FCFA", sub:"Tchad • Epargne", flag:"🇹🇩"},
  {id:"credit", name:"Credit Conso", bal:"-1,200 PI", sub:"Echeance 15/11 • Credit", flag:"💳"},
 ]
-
-const zones:any={
- "CEMAC":["Tchad BEAC","Cameroun BICEC","Gabon BGFI","Congo","RCA","Guinee Eq"],
- "UEMOA":["Senegal","Cote d'Ivoire","Mali","Burkina","Benin","Togo","Niger"],
- "DOLLAR":["USA Chase","USA BoA","Canada RBC"],
- "JORDANIE":["Jordan Ahli Bank","Arab Bank JO","Housing Bank JO"],
- "GOLFE":["UAE FAB","Saudi Al Rajhi","Qatar QNB","Kuwait NBK","Bahrein NBB","Oman Bank Muscat"],
- "MOYEN-ORIENT":["Turquie Ziraat","Liban Byblos","Egypte NBE"],
- "INTERNATIONAL":["UK Barclays","France BNP SEPA","Allemagne Deutsche","Chine ICBC","Inde SBI"]
-}
 
 const cards=[
  {id:"visa", name:"VISA CLASSIC", num:"4242 1234 5678 4582", exp:"08/29", cvv:"123", color:"linear-gradient(135deg,#1e3a8a,#3b82f6)", t:"#fff"},
@@ -149,12 +169,12 @@ return(
 <div style={{width:"82%", maxWidth:330, background:"#0A1931", height:"100%", padding:16, borderRight:"2px solid #C9A86A", overflowY:"auto"}} onClick={(e)=>e.stopPropagation()}>
 <div style={{display:"flex", justifyContent:"space-between"}}><b style={{color:"#F9E2AF"}}>GARGOURA DIGITAL BANK</b><button onClick={()=>setMenuOpen(false)} style={{background:"#C9A86A", border:"none", borderRadius:20, padding:"5px 12px", fontWeight:900}}>✕</button></div>
 <div style={{marginTop:12, display:"flex", flexDirection:"column", gap:6}}>
-{[{i:"accueil", l:"🏠 Accueil"},{i:"paiement", l:"💸 Paiement Pi Reel + MoMo"},{i:"cartes", l:"💳 Cartes VISA GOLD"},{i:"epargne", l:"📈 Epargne PFM"},{i:"plus", l:"☰ Plus - FX Halal RGPD"}].map((b)=>(
+{[{i:"accueil", l:"🏠 Accueil"},{i:"paiement", l:"💸 Paiement Pi Reel + MoMo 7 Zones"},{i:"cartes", l:"💳 Cartes VISA GOLD"},{i:"epargne", l:"📈 Epargne PFM"},{i:"plus", l:"☰ Plus - FX Halal RGPD"}].map((b)=>(
 <button key={b.i} onClick={()=>{setTab(b.i); setMenuOpen(false)}} style={{textAlign:"left", background:tab===b.i?"#C9A86A":"rgba(255,255,255,0.07)", color:tab===b.i?"#0A1931":"#fff", border:"none", borderRadius:10, padding:12, fontWeight:800, fontSize:11}}>{b.l}</button>
 ))}
 </div>
 <div style={{marginTop:14, background:"rgba(201,168,106,0.12)", borderRadius:12, padding:12, color:"#fff", fontSize:9}}>
-<b style={{color:"#C9A86A"}}>PI SDK: {piReady? "✅ Pret "+piMode.toUpperCase() : "⏳ Chargement..."}</b><br/>CEMAC UEMOA GOLFE JORDANIE<br/>Mobile Money 15 operateurs<br/>GCV 314159$
+<b style={{color:"#C9A86A"}}>PI SDK: {piReady? "✅ Pret "+piMode.toUpperCase() : "⏳ Chargement..."}</b><br/>7 Zones: CEMAC UEMOA DOLLAR JORDANIE GOLFE M-O INTL<br/>MoMo: {zoneMoMo[zone]?.ops?.join(" ")}<br/>GCV 314159$
 </div>
 </div>
 </div>
@@ -163,7 +183,7 @@ return(
 {tab==="accueil" && (
 <div>
 <div style={{background:"linear-gradient(180deg,#0A1931 0%,#142850 100%)", padding:16, borderRadius:"0 0 22px 22px"}}>
-<div style={{display:"flex", justifyContent:"space-between"}}><span style={{color:"#C9A86A", fontSize:9, fontWeight:800}}>SYNTHESE • {piMode.toUpperCase()} • {piReady? "READY" : "..."}</span><span style={{color:hide? "#ef4444" : "#10b981", fontSize:9}}>{hide? "MASQUE" : "LIVE"}</span></div>
+<div style={{display:"flex", justifyContent:"space-between"}}><span style={{color:"#C9A86A", fontSize:9, fontWeight:800}}>SYNTHESE • {piMode.toUpperCase()} • 7 ZONES • {piReady? "READY" : "..."}</span><span style={{color:hide? "#ef4444" : "#10b981", fontSize:9}}>{hide? "MASQUE" : "LIVE"}</span></div>
 {wallets.map((w)=>(
 <div key={w.id} style={{background:w.id==="credit"? "linear-gradient(135deg,#7f1d1d,#dc2626)" : "linear-gradient(135deg,#0A1931,#1A2A4A)", border:"1.2px solid #C9A86A", borderRadius:14, padding:12, marginTop:10, display:"flex", justifyContent:"space-between"}}>
 <div><div style={{color:"#F9E2AF", fontSize:9}}>{w.flag} {w.name}</div><div style={{color:"#fff", fontWeight:900, fontSize:15}}>{hide? "••••" : w.bal}</div><div style={{color:"#C9A86A", fontSize:8}}>{w.sub}</div></div>
@@ -183,7 +203,7 @@ return(
 </div>
 <div style={{padding:12}}>
 <div style={{background:"#fff", borderRadius:12, padding:10, border:"1px solid #e2e8f0", textAlign:"center"}}>
-<div style={{fontSize:10, fontWeight:800}}>QR Reception Pi Reel - {piMode.toUpperCase()} - GARGOURA DIGITAL BANK</div>
+<div style={{fontSize:10, fontWeight:800}}>QR Reception Pi Reel - {piMode.toUpperCase()} - GARGOURA DIGITAL BANK - {zone}</div>
 <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(gdbAddr)}`} alt="QR" style={{marginTop:8, width:150, height:150, border:"3px solid #C9A86A", borderRadius:12}} />
 <div style={{fontSize:8, marginTop:8, background:"#0A1931", color:"#F9E2AF", padding:10, borderRadius:10, wordBreak:"break-all"}}>{gdbAddr}</div>
 </div>
@@ -193,9 +213,9 @@ return(
 
 {tab==="paiement" && (
 <div style={{padding:12}}>
-<div style={{fontWeight:900, color:"#0A1931", fontSize:14}}>Paiement & Transferts • PI DUAL</div>
-<div style={{display:"flex", gap:4, overflowX:"auto", marginTop:10}}>{Object.keys(zones).map((z)=>(
-<button key={z} onClick={()=>setZone(z)} style={{padding:"7px 12px", borderRadius:20, border:"1px solid #C9A86A", background:zone===z? "#C9A86A" : "#fff", fontSize:9, fontWeight:900}}>{z}</button>
+<div style={{fontWeight:900, color:"#0A1931", fontSize:14}}>Paiement & Transferts • PI DUAL • 7 Zones</div>
+<div style={{display:"flex", gap:4, overflowX:"auto", marginTop:10, paddingBottom:4}}>{Object.keys(zones).map((z)=>(
+<button key={z} onClick={()=>setZone(z)} style={{padding:"7px 12px", borderRadius:20, border:"1px solid #C9A86A", background:zone===z? "#0A1931" : "#fff", color:zone===z? "#C9A86A":"#0A1931", fontSize:9, fontWeight:900, whiteSpace:"nowrap"}}>{z}</button>
 ))}</div>
 
 <div style={{display:"flex", gap:6, marginTop:10, background:"#fff", borderRadius:20, padding:4, border:"1.5px solid #C9A86A"}}>
@@ -203,29 +223,36 @@ return(
 <button onClick={()=>setPiMode("mainnet")} style={{flex:1, padding:"8px", borderRadius:15, border:"none", background:piMode==="mainnet"?"#C9A86A":"transparent", color:"#0A1931", fontWeight:900, fontSize:9}}>💎 MAINNET</button>
 </div>
 
-<div style={{background:"#fff", borderRadius:12, padding:12, marginTop:8, border:"1px solid #e2e8f0"}}>
-<select style={{width:"100%", padding:10, borderRadius:8, border:"1px solid #e2e8f0", fontSize:10}}>{zones[zone].map((p:string)=><option key={p}>{p}</option>)}</select>
-<input placeholder="Adresse PI G... / IBAN / Numero MoMo" style={{width:"100%", marginTop:8, padding:10, borderRadius:8, border:"1px solid #e2e8f0", fontSize:10}} />
-<input id="piAmount" placeholder={piMode==="testnet"? "Montant Testnet ex 5" : "Montant Reel ex 1 PI = 314159$"} style={{width:"100%", marginTop:8, padding:10, borderRadius:8, border:"1px solid #e2e8f0", fontSize:10}} />
-<div style={{display:"flex", gap:6, marginTop:10}}>
-<button onClick={()=>{const el=document.getElementById("piAmount") as HTMLInputElement; const amt=parseFloat(el?.value||"1")||1; handlePiPayment(amt, "Paiement P2P "+zone+" "+piMode)}} style={{flex:1, padding:12, borderRadius:10, background:piMode==="testnet"?"#1e3a8a":"#0A1931", color:piMode==="testnet"?"#fff":"#C9A86A", fontWeight:900, border:"none", fontSize:10}}>🟣 Envoyer {piMode.toUpperCase()} PI {zone}</button>
-<button onClick={()=>alert("Mobile Money Tchad via CinetPay\nAPI: /api/momo/send\n"+piMode)} style={{flex:1, padding:12, borderRadius:10, background:"#22c55e", color:"#fff", fontWeight:900, border:"none", fontSize:10}}>📱 MoMo {zone}</button>
+<div style={{background:"#fff", borderRadius:12, padding:12, marginTop:10, border:"1px solid #e2e8f0"}}>
+<div style={{display:"flex", justifyContent:"space-between"}}><span style={{fontWeight:900, fontSize:10, color:"#0A1931"}}>{zoneMoMo[zone]?.flag} Opérateurs {zone} • {zoneMoMo[zone]?.cur} • MAINNET</span><span style={{fontSize:8, color:"#10b981", fontWeight:800}}>{zoneMoMo[zone]?.delay} • {zoneMoMo[zone]?.fee}</span></div>
+<div style={{display:"flex", gap:5, flexWrap:"wrap", marginTop:8}}>
+{zoneMoMo[zone]?.ops.map((op:string)=>(
+<button key={op} onClick={()=>setMomoOp(op)} style={{padding:"6px 10px", borderRadius:15, border:"1px solid #C9A86A", background:momoOp===op?"#C9A86A":"#F5F7FB", fontSize:9, fontWeight:900, color:"#0A1931"}}>{op}</button>
+))}
 </div>
+<select style={{width:"100%", padding:10, borderRadius:8, border:"1px solid #e2e8f0", fontSize:10, marginTop:10}}>{zones[zone].map((p:string)=><option key={p}>{p}</option>)}</select>
+<input placeholder="Adresse PI G... / IBAN / Numero MoMo" style={{width:"100%", marginTop:8, padding:10, borderRadius:8, border:"1px solid #e2e8f0", fontSize:10}} />
+<input id="piAmount" placeholder={piMode==="testnet"? `Montant Testnet en ${zoneMoMo[zone]?.cur} ex 5` : `Montant Reel ex 1 Pi = 314159$ - En ${zoneMoMo[zone]?.cur}`} style={{width:"100%", marginTop:8, padding:10, borderRadius:8, border:"1px solid #e2e8f0", fontSize:10}} />
+<div style={{display:"flex", gap:6, marginTop:10}}>
+<button onClick={()=>{const el=document.getElementById("piAmount") as HTMLInputElement; const amt=parseFloat(el?.value||"1")||1; handlePiPayment(amt, "Paiement P2P "+zone+" "+momoOp+" "+piMode)}} style={{flex:1, padding:12, borderRadius:10, background:piMode==="testnet"?"#1e3a8a":"#0A1931", color:piMode==="testnet"?"#fff":"#C9A86A", fontWeight:900, border:"none", fontSize:10}}>🟣 Envoyer {piMode.toUpperCase()} PI {zone}</button>
+<button onClick={()=>alert("Mobile Money "+zone+" via "+momoOp+" CinetPay\nDevise: "+zoneMoMo[zone]?.cur+"\nAPI: /api/momo/send\n"+piMode)} style={{flex:1, padding:12, borderRadius:10, background:"#22c55e", color:"#fff", fontWeight:900, border:"none", fontSize:10}}>📱 MoMo {momoOp.slice(0,8)}</button>
+</div>
+<div style={{fontSize:7, color:"#64748b", marginTop:6, textAlign:"center"}}>Circulation: Pi GCV → {momoOp} → {zoneMoMo[zone]?.cur} instantanée • Opérateur sélectionné: {momoOp}</div>
 </div>
 
 <div style={{background:"linear-gradient(135deg,#14532d,#22c55e)", borderRadius:12, padding:12, marginTop:10, color:"#fff"}}>
-<div style={{fontWeight:900, fontSize:11}}>Mobile Money • 15 Operateurs • CinetPay</div>
-<div style={{fontSize:8, marginTop:6}}>Orange MTN Wave Moov Airtel M-Pesa STC Pay Jawwal • Delai {"<30s"} • Frais 0.8% • Mode {piMode.toUpperCase()}</div>
+<div style={{fontWeight:900, fontSize:11}}>Mobile Money • {zone} • {momoOp} • CinetPay • {zoneMoMo[zone]?.cur}</div>
+<div style={{fontSize:8, marginTop:6}}>{zoneMoMo[zone]?.ops.join(" • ")} • Delai {zoneMoMo[zone]?.delay} • Frais {zoneMoMo[zone]?.fee} • Mode {piMode.toUpperCase()} • Circulation {zone}</div>
 </div>
 </div>
 )}
 
 {tab==="cartes" && (
 <div style={{padding:12}}>
-<div style={{fontWeight:900, color:"#0A1931"}}>Cartes GARGOURA DIGITAL BANK • {piMode.toUpperCase()}</div>
+<div style={{fontWeight:900, color:"#0A1931"}}>Cartes GARGOURA DIGITAL BANK • {piMode.toUpperCase()} • Tokenisées</div>
 {cards.map((c,i)=>(
 <div key={c.id} style={{background:c.color, borderRadius:18, padding:16, marginTop:12, color:c.t}}>
-<div style={{display:"flex", justifyContent:"space-between"}}><span style={{fontWeight:900, fontSize:11}}>{c.name}</span><span style={{fontSize:9, background:"rgba(255,255,255,0.2)", padding:"4px 8px", borderRadius:20}}>{blocked[i]? "🔒" : "🟢 NFC"}</span></div>
+<div style={{display:"flex", justifyContent:"space-between"}}><span style={{fontWeight:900, fontSize:11}}>{c.name}</span><span style={{fontSize:9, background:"rgba(255,255,255,0.2)", padding:"4px 8px", borderRadius:20}}>{blocked[i]? "🔒" : "🟢 NFC"} • MNBC Ready</span></div>
 <div style={{marginTop:14, fontSize:14, letterSpacing:2, fontWeight:800, fontFamily:"monospace"}}>{showCVV? c.num : "•••• •••• •••• "+c.num.slice(-4)}</div>
 <div style={{display:"flex", justifyContent:"space-between", marginTop:10, fontSize:10}}><div><div style={{opacity:0.7, fontSize:8}}>HOLDER</div><div style={{fontWeight:900}}>{userName}</div></div><div><div style={{opacity:0.7, fontSize:8}}>EXP</div><div>{c.exp}</div></div><div><div style={{opacity:0.7, fontSize:8}}>CVV</div><div>{showCVV? c.cvv : "•••"}</div></div></div>
 <div style={{display:"flex", gap:6, marginTop:12}}>
@@ -239,14 +266,14 @@ return(
 
 {tab==="epargne" && (
 <div style={{padding:12}}>
-<div style={{fontWeight:900, color:"#0A1931"}}>Epargne PFM • Coffres • Micro-credit • {piMode.toUpperCase()}</div>
+<div style={{fontWeight:900, color:"#0A1931"}}>Epargne PFM • Coffres • Micro-credit • {piMode.toUpperCase()} • DeFi Halal</div>
 <div style={{background:"#fff", borderRadius:12, padding:12, marginTop:8, border:"1px solid #e2e8f0"}}>
-<div style={{fontWeight:800, fontSize:10}}>Budget PFM • Alerte depassement</div>
+<div style={{fontWeight:800, fontSize:10}}>Budget PFM • Alerte depassement • Tokenisé</div>
 <div style={{display:"flex", gap:4, alignItems:"flex-end", height:50, marginTop:8}}>{[40,70,55,90,60,80].map((h,i)=><div key={i} style={{flex:1, background:i===3? "#C9A86A" : "#0A1931", height:h+"%", borderRadius:4}}></div>)}</div>
-<div style={{fontSize:8, marginTop:6}}>Vacances 450/800 PI • Alerte si {" >10%"} depassement</div>
+<div style={{fontSize:8, marginTop:6}}>Vacances 450/800 PI • Alerte si {" >10%"} depassement • RWA: Immobilier Tchad tokenisé</div>
 </div>
 <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:8}}>
-<div style={{background:"#0A1931", color:"#F9E2AF", borderRadius:12, padding:12}}><div style={{fontSize:9}}>Coffre Arrondi Auto</div><div style={{fontSize:9, marginTop:4, color:"#fff"}}>12.3 PI → 13 PI, 0.7 PI en cagnotte • 87.5 PI bloque</div></div>
+<div style={{background:"#0A1931", color:"#F9E2AF", borderRadius:12, padding:12}}><div style={{fontSize:9}}>Coffre Arrondi Auto • DeFi</div><div style={{fontSize:9, marginTop:4, color:"#fff"}}>12.3 PI → 13 PI, 0.7 PI en cagnotte • 87.5 PI bloque • APY 5% Halal</div></div>
 <div style={{background:"#fff", borderRadius:12, padding:12, border:"1px solid #e2e8f0"}}><div style={{fontSize:9}}>Micro-credit 50-5000 PI • Halal • {piMode.toUpperCase()}</div><button onClick={()=>handlePiPayment(50, "Micro-credit Halal "+piMode)} style={{width:"100%", marginTop:6, padding:8, borderRadius:8, background:"#10b981", color:"#fff", border:"none", fontSize:9, fontWeight:800}}>Demander 50 PI {piMode.toUpperCase()}</button></div>
 </div>
 </div>
@@ -254,14 +281,14 @@ return(
 
 {tab==="plus" && (
 <div style={{padding:12}}>
-<div style={{background:"#0A1931", borderRadius:12, padding:12, color:"#fff", display:"flex", gap:10}}><img src="/logo.png" style={{width:44, height:44, borderRadius:10, background:"#fff"}} alt="logo" /><div><div style={{color:"#F9E2AF", fontWeight:900}}>GARGOURA DIGITAL BANK • {piMode.toUpperCase()}</div><div style={{fontSize:9}}>{gdbAddr.slice(0,20)}... • {kycOk? "✅ RGPD" : "KYC"}</div></div></div>
+<div style={{background:"#0A1931", borderRadius:12, padding:12, color:"#fff", display:"flex", gap:10}}><img src="/logo.png" style={{width:44, height:44, borderRadius:10, background:"#fff"}} alt="logo" /><div><div style={{color:"#F9E2AF", fontWeight:900}}>GARGOURA DIGITAL BANK • {piMode.toUpperCase()} • 7 ZONES</div><div style={{fontSize:9}}>{gdbAddr.slice(0,20)}... • {kycOk? "✅ RGPD" : "KYC"} • {zone} • {momoOp}</div></div></div>
 <div style={{background:"#fff", borderRadius:12, padding:12, marginTop:10, border:"1px solid #e2e8f0"}}>
-<div style={{fontWeight:900, fontSize:10}}>Multi-devises FX • 12 devises • {piMode.toUpperCase()}</div><div style={{fontSize:8, marginTop:4}}>USD EUR XAF JOD AED • Taux reel • Frais 0.43% • IBAN virtuel</div>
+<div style={{fontWeight:900, fontSize:10}}>Multi-devises FX • 12 devises • {piMode.toUpperCase()} • Tokenisées</div><div style={{fontSize:8, marginTop:4}}>USD EUR XAF JOD AED SAR QAR • Taux reel • Frais 0.43% • IBAN virtuel • MNBC: eCFA eNaira Digital USD</div>
 </div>
 <div style={{background:"#fff", borderRadius:12, padding:12, marginTop:10, border:"1px solid #e2e8f0"}}>
-<div style={{fontWeight:900, fontSize:10}}>RGPD PCI-DSS FaceID</div><div style={{fontSize:8, marginTop:4}}>AES-256, tokenisation, 3D Secure, ISO20022</div><button onClick={()=>setKycOk(true)} style={{marginTop:8, width:"100%", padding:10, borderRadius:8, background:kycOk? "#10b981" : "#0A1931", color:"#fff", border:"none", fontWeight:900, fontSize:10}}>{kycOk? "✅ Securise" : "Activer KYC"}</button>
+<div style={{fontWeight:900, fontSize:10}}>RGPD PCI-DSS FaceID • ISO20022</div><div style={{fontSize:8, marginTop:4}}>AES-256, tokenisation, 3D Secure, ISO20022, 7 zones economiques securisees</div><button onClick={()=>setKycOk(true)} style={{marginTop:8, width:"100%", padding:10, borderRadius:8, background:kycOk? "#10b981" : "#0A1931", color:"#fff", border:"none", fontWeight:900, fontSize:10}}>{kycOk? "✅ Securise 7 Zones" : "Activer KYC Global"}</button>
 </div>
-<div style={{background:"linear-gradient(135deg,#fef3c7,#fde68a)", borderRadius:12, padding:12, marginTop:10}}><div style={{fontWeight:900, fontSize:10, color:"#92400e"}}>Halal Sans Riba • Vert ESG • {piMode.toUpperCase()}</div><div style={{fontSize:8, color:"#78350f", marginTop:4}}>Mudaraba Musharaka Murabaha • AAOIFI • Zakat 2.5% • ESG 8.5</div></div>
+<div style={{background:"linear-gradient(135deg,#fef3c7,#fde68a)", borderRadius:12, padding:12, marginTop:10}}><div style={{fontWeight:900, fontSize:10, color:"#92400e"}}>Halal Sans Riba • Vert ESG • {piMode.toUpperCase()} • AAOIFI</div><div style={{fontSize:8, color:"#78350f", marginTop:4}}>Mudaraba Musharaka Murabaha • AAOIFI • Zakat 2.5% • ESG 8.5 • 7 zones halal • MoMo inclusif</div></div>
 </div>
 )}
 
