@@ -163,7 +163,6 @@ const parseAmt = parseFloat(piAmount) || 0
 const localValMarche = parseAmt*0.30 * (zoneMoMo[zone]?.rate || 1)
 const localValMarchand = parseAmt*(parseFloat(merchantRate)||0.5) * (zoneMoMo[zone]?.rate || 1)
 const microVal = Math.round(parseAmt*1000000)
-const xafCantonnePreview = valueType==="GCV"? 0 : valueType==="MARCHE"? localValMarche : localValMarchand
 
 const wallets=[
  {id:"pi", name:"PI GCV Principal UBA", bal: hide? "••••" : `${accounts[0].balPi} PI`, sub:`KYC ${gdbAddr.slice(0,6)}...QVK • MAINNET • IBAN ${accounts[0].iban.slice(0,8)}... • UBA Pièce 17`, flag:"🟣"},
@@ -182,22 +181,44 @@ return(
 <div dir={rtl? "rtl" : "ltr"} style={{maxWidth:440, margin:"0 auto", background:"#F5F7FB", minHeight:"100vh", paddingBottom:95, fontFamily:"Inter, system-ui"}}>
 <div style={{background:"#0A1931", padding:"12px 14px", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, zIndex:30}}>
 <button onClick={()=>setMenuOpen(true)} style={{background:"none", border:"none", color:"#C9A86A", fontSize:22}}>☰</button>
-<div style={{display:"flex", alignItems:"center", gap:8}}><div style={{width:34, height:34, borderRadius:8, background:"#fff", display:"flex", alignItems:"center", justifyContent:"center"}}>🛡️</div><span style={{color:"#F9E2AF", fontWeight:900, fontSize:11}}>GARGOURA <span style={{color:"#fff", fontWeight:300}}>DIGITAL BANK</span> <span style={{color:"#10b981", fontSize:7}}>● V5.3 BANQUE KYC {kycOk?"✅":"⚠️"}</span></span></div>
+<div style={{display:"flex", alignItems:"center", gap:8}}>
+<img src="/logo.png" alt="GDB" width={34} height={34} style={{width:34, height:34, borderRadius:8, background:"#fff", padding:2, objectFit:"contain"}} onError={(e)=>{(e.currentTarget as HTMLImageElement).style.display="none"}} />
+<span style={{color:"#F9E2AF", fontWeight:900, fontSize:11}}>GARGOURA <span style={{color:"#fff", fontWeight:300}}>DIGITAL BANK</span> <span style={{color:"#10b981", fontSize:7}}>● V5.3 KYC {kycOk?"✅":"⚠️"}</span></span>
+</div>
 <button onClick={()=>setHide(!hide)} style={{background:"rgba(255,255,255,0.15)", border:"none", borderRadius:20, padding:"5px 10px", color:"#fff"}}>{hide? "🙈" : "👁️"}</button>
 </div>
 
 {menuOpen && (
 <div style={{position:"fixed", inset:0, background:"rgba(10,25,49,0.7)", zIndex:50, display:"flex"}} onClick={()=>setMenuOpen(false)}>
-<div style={{width:"82%", maxWidth:330, background:"#0A1931", height:"100%", padding:16, borderRight:"2px solid #C9A86A", overflowY:"auto"}} onClick={(e)=>e.stopPropagation()}>
-<div style={{display:"flex", justifyContent:"space-between"}}><b style={{color:"#F9E2AF"}}>GARGOURA V5.3 BANQUE</b><button onClick={()=>setMenuOpen(false)} style={{background:"#C9A86A", border:"none", borderRadius:20, padding:"5px 12px", fontWeight:900}}>✕</button></div>
+<div style={{width:"82%", maxWidth:330, background:"#0A1931", height:"100%", padding:16, borderRight:"2px solid #C9A86A", overflowY:"auto", display:"flex", flexDirection:"column"}} onClick={(e)=>e.stopPropagation()}>
+<div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+<div style={{display:"flex", alignItems:"center", gap:8}}>
+<img src="/logo.png" alt="GDB" width={32} height={32} style={{width:32, height:32, borderRadius:8, background:"#fff", padding:2, objectFit:"contain"}} onError={(e)=>{(e.currentTarget as HTMLImageElement).style.display="none"}} />
+<b style={{color:"#F9E2AF", fontSize:12}}>GARGOURA BANK</b>
+</div>
+<button onClick={()=>setMenuOpen(false)} style={{background:"#C9A86A", border:"none", borderRadius:20, padding:"5px 12px", fontWeight:900}}>✕</button>
+</div>
+
 <div style={{marginTop:12, display:"flex", flexDirection:"column", gap:6}}>
 {[{i:"accueil", l:"🏠 Accueil V5.3 Banque"},{i:"paiement", l:"💸 Paiement Pi Triple 7 Zones"},{i:"cartes", l:"💳 Cartes VISA GOLD UBA"},{i:"epargne", l:"📈 Epargne Tontine µPi"},{i:"plus", l:"☰ Plus - Banque Complète"}].map((b)=>(
 <button key={b.i} onClick={()=>{setTab(b.i); setMenuOpen(false)}} style={{textAlign:"left", background:tab===b.i?"#C9A86A":"rgba(255,255,255,0.07)", color:tab===b.i?"#0A1931":"#fff", border:"none", borderRadius:10, padding:12, fontWeight:800, fontSize:11}}>{b.l}</button>
 ))}
 </div>
+
 <div style={{marginTop:14, background:"rgba(16,185,129,0.15)", borderRadius:12, padding:12, color:"#fff", fontSize:9, border:"1px solid #10b981"}}>
-<b style={{color:"#10b981"}}>V5.3 BANQUE • KYC GAS5...QVK ✅ • BANQUE FUTURE GAM7... ⏳ KYB</b><br/>KYC: {gdbAddr.slice(0,12)}...QVK<br/>BANQUE: {gdbAddrBankFuture.slice(0,12)}...<br/>TESTNET: {gdbAddrTestnet.slice(0,12)}...<br/>Tx: 2c314c09... 6ec364f8...<br/>IBAN: {accounts[1].iban}<br/>Plafond: {limits.journalier.toLocaleString()} XAF/j
+<b style={{color:"#10b981"}}>V5.3 BANQUE • KYC GAS5...QVK ✅</b><br/>KYC: {gdbAddr.slice(0,12)}...QVK<br/>BANQUE FUTURE: {gdbAddrBankFuture.slice(0,12)}... ⏳ KYB<br/>IBAN: {accounts[1].iban}
 </div>
+
+<div style={{marginTop:"auto", paddingTop:16, borderTop:"1px solid rgba(201,168,106,0.2)"}}>
+<div style={{background:"rgba(201,168,106,0.08)", border:"1px solid #C9A86A33", borderRadius:12, padding:12, textAlign:"center"}}>
+<img src="/logo.png" alt="GDB" width={44} height={44} style={{width:44, height:44, borderRadius:10, background:"#fff", padding:4, objectFit:"contain", margin:"0 auto 8px", display:"block"}} onError={(e)=>{(e.currentTarget as HTMLImageElement).style.display="none"}} />
+<div style={{fontSize:13, fontWeight:900, color:"#C9A86A", letterSpacing:1}}>V 5.0.3</div>
+<div style={{fontSize:8, color:"#F9E2AF", marginTop:4, fontWeight:700}}>GARGOURA DIGITAL BANK</div>
+<div style={{fontSize:6, color:"#9ca3af", marginTop:3}}>UBA Tchad Pièce 17 • BEAC COBAC • KYC GAS5...QVK ✅</div>
+<div style={{fontSize:6, color:"#64748b", marginTop:4}}>Tx 2c314c09... 6ec364f8... • {accounts[1].iban.slice(0,12)}...</div>
+</div>
+</div>
+
 </div>
 </div>
 )}
@@ -205,25 +226,25 @@ return(
 {tab==="accueil" && (
 <div>
 <div style={{background:"linear-gradient(180deg,#0A1931 0%,#142850 100%)", padding:16, borderRadius:"0 0 22px 22px"}}>
-<div style={{display:"flex", justifyContent:"space-between"}}><span style={{color:"#C9A86A", fontSize:9, fontWeight:800}}>SYNTHESE V5.3 BANQUE • KYC {kycOk?"✅":"⚠️"} • IBAN • {piReady? "READY" : "..."}</span><span style={{color:hide? "#ef4444" : "#10b981", fontSize:9}}>{hide? "MASQUE" : "LIVE UBA"}</span></div>
+<div style={{display:"flex", justifyContent:"space-between"}}><span style={{color:"#C9A86A", fontSize:9, fontWeight:800}}>SYNTHESE V5.0.3 • KYC {kycOk?"✅":"⚠️"} • IBAN • {piReady? "READY" : "..."}</span><span style={{color:hide? "#ef4444" : "#10b981", fontSize:9}}>{hide? "MASQUE" : "LIVE UBA"}</span></div>
 {wallets.map((w)=>(
 <div key={w.id} style={{background:w.id==="credit"? "linear-gradient(135deg,#7f1d1d,#dc2626)" : "linear-gradient(135deg,#0A1931,#1A2A4A)", border:"1.2px solid #C9A86A", borderRadius:14, padding:12, marginTop:10, display:"flex", justifyContent:"space-between"}}>
 <div><div style={{color:"#F9E2AF", fontSize:9}}>{w.flag} {w.name}</div><div style={{color:"#fff", fontWeight:900, fontSize:15}}>{w.bal}</div><div style={{color:"#C9A86A", fontSize:8}}>{w.sub}</div></div>
 <div style={{fontSize:9, color:"#fff", background:"rgba(16,185,129,0.25)", borderRadius:20, padding:"5px 10px", height:22, border:"1px solid #10b981"}}>UBA</div>
 </div>
 ))}
-<button onClick={()=>handlePiPayment(parseFloat(piAmount)||0.0015, "Recharge GARGOURA V5.3 Banque")} style={{width:"100%", marginTop:12, padding:14, borderRadius:10, background:piReady? "#C9A86A" : "#64748b", color:"#0A1931", fontWeight:900, border:"none", fontSize:12}}>💎 PAYER {piAmount} PI V5.3 BANQUE - KYC GAS5...QVK</button>
+<button onClick={()=>handlePiPayment(parseFloat(piAmount)||0.0015, "Recharge GARGOURA V5.0.3")} style={{width:"100%", marginTop:12, padding:14, borderRadius:10, background:piReady? "#C9A86A" : "#64748b", color:"#0A1931", fontWeight:900, border:"none", fontSize:12}}>💎 PAYER {piAmount} PI V5.0.3 - KYC GAS5...QVK</button>
 </div>
 <div style={{padding:12}}>
 <div style={{background:"#fff", borderRadius:12, padding:10, border:"1px solid #e2e8f0", textAlign:"center"}}>
-<div style={{fontSize:10, fontWeight:800}}>QR Reception Pi Reel V5.3 BANQUE - {zone} - {momoOp} - KYC GAS5...QVK</div>
+<div style={{fontSize:10, fontWeight:800}}>QR Reception Pi Reel V5.0.3 - {zone} - {momoOp} - KYC GAS5...QVK</div>
 <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(gdbAddr)}`} alt="QR" style={{marginTop:8, width:150, height:150, border:"3px solid #C9A86A", borderRadius:12}} />
 <div style={{fontSize:8, marginTop:8, background:"#0A1931", color:"#F9E2AF", padding:10, borderRadius:10, wordBreak:"break-all"}}>KYC ACTIF: {gdbAddr}<br/>BANQUE FUTURE: {gdbAddrBankFuture}<br/>IBAN: {accounts[1].iban}</div>
 </div>
 <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:12}}>
 <div style={{background:"#fff", borderRadius:12, padding:10, border:"1px solid #C9A86A"}}><div style={{fontSize:9, fontWeight:900}}>💳 Visa Virtuelle • {virtualCards.length}</div><div style={{fontSize:7}}>IBAN {accounts[1].iban.slice(0,12)}...</div></div>
 <div style={{background:"#fff", borderRadius:12, padding:10, border:"1px solid #C9A86A"}}><div style={{fontSize:9, fontWeight:900}}>📱 QR Merchant Pay</div><div style={{fontSize:7}}>IBAN XAF • 1.5%</div></div>
-<div style={{background:"#fff", borderRadius:12, padding:10, border:"1px solid #10b981"}}><div style={{fontSize:9, fontWeight:900}}>👥 Tontine • {tontines.length}</div><div style={{fontSize:7}}>{txHistory.length} Tx historisées</div></div>
+<div style={{background:"#fff", borderRadius:12, padding:10, border:"1px solid #10b981"}}><div style={{fontSize:9, fontWeight:900}}>👥 Tontine • {tontines.length}</div><div style={{fontSize:7}}>{txHistory.length} Tx</div></div>
 <div style={{background:"#fff", borderRadius:12, padding:10, border:"1px solid #C9A86A"}}><div style={{fontSize:9, fontWeight:900}}>📄 Relevé BEAC</div><div style={{fontSize:7}}>Plafond {limits.journalier.toLocaleString()} XAF</div></div>
 </div>
 </div>
@@ -232,7 +253,7 @@ return(
 
 {tab==="paiement" && (
 <div style={{padding:12}}>
-<div style={{fontWeight:900, color:"#0A1931", fontSize:14}}>Paiement V5.3 Banque • KYC GAS5...QVK • IBAN</div>
+<div style={{fontWeight:900, color:"#0A1931", fontSize:14}}>Paiement V5.0.3 • KYC GAS5...QVK • IBAN</div>
 <div style={{display:"flex", gap:4, overflowX:"auto", marginTop:10, paddingBottom:4}}>{Object.keys(zones).map((z)=>(
 <button key={z} onClick={()=>setZone(z)} style={{padding:"7px 12px", borderRadius:20, border:"1px solid #C9A86A", background:zone===z? "#0A1931" : "#fff", color:zone===z? "#C9A86A":"#0A1931", fontSize:9, fontWeight:900, whiteSpace:"nowrap"}}>{z}</button>
 ))}</div>
@@ -259,13 +280,13 @@ return(
 </div>
 )}
 <div style={{display:"flex", gap:6, marginTop:10}}>
-<button onClick={()=>handlePiPayment(parseAmt, "Paiement P2P V5.3 Banque "+zone+" "+momoOp)} style={{flex:1, padding:12, borderRadius:10, background:"#0A1931", color:"#C9A86A", fontWeight:900, border:"none", fontSize:10}}>🟣 Envoyer {parseAmt} PI • KYC GAS5</button>
-<button onClick={()=>alert(`MoMo ${momoOp} - ${parseAmt} Pi - ${xafCantonnePreview} ${zoneMoMo[zone]?.cur}`)} style={{flex:1, padding:12, borderRadius:10, background:"#22c55e", color:"#fff", fontWeight:900, border:"none", fontSize:10}}>📱 MoMo {momoOp.slice(0,8)}</button>
+<button onClick={()=>handlePiPayment(parseAmt, "Paiement P2P V5.0.3 "+zone+" "+momoOp)} style={{flex:1, padding:12, borderRadius:10, background:"#0A1931", color:"#C9A86A", fontWeight:900, border:"none", fontSize:10}}>🟣 Envoyer {parseAmt} PI • KYC GAS5</button>
+<button onClick={()=>alert(`MoMo ${momoOp} - ${parseAmt} Pi`)} style={{flex:1, padding:12, borderRadius:10, background:"#22c55e", color:"#fff", fontWeight:900, border:"none", fontSize:10}}>📱 MoMo {momoOp.slice(0,8)}</button>
 </div>
 </div>
 <div style={{background:"#fff", borderRadius:12, padding:12, marginTop:10, border:"1px solid #e2e8f0"}}>
 <div style={{fontWeight:900, fontSize:10, color:"#0A1931"}}>📄 Historique • {txHistory.length} Tx • IBAN {accounts[1].iban.slice(0,10)}...</div>
-{txHistory.slice(0,3).map((t:any)=><div key={t.id||t.txid} style={{fontSize:8, marginTop:6, background:"#F5F7FB", padding:6, borderRadius:6}}><b>{t.amount} Pi = {t.microns} µPi</b> • {t.valueType||"MARCHE"} • {t.zone} {t.momoOp||t.momo} • {t.status} • Tx {(t.txid||t.id||"").slice(0,12)}...</div>)}
+{txHistory.slice(0,3).map((t:any)=><div key={t.id||t.txid} style={{fontSize:8, marginTop:6, background:"#F5F7FB", padding:6, borderRadius:6}}><b>{t.amount} Pi = {t.microns} µPi</b> • {t.zone} {t.momoOp||t.momo} • Tx {(t.txid||t.id||"").slice(0,12)}...</div>)}
 <button onClick={generateRelevePDF} style={{marginTop:8, padding:8, borderRadius:8, background:"#0A1931", color:"#C9A86A", border:"none", fontSize:8, fontWeight:900, width:"100%"}}>Relevé PDF BEAC IBAN</button>
 </div>
 </div>
@@ -273,7 +294,7 @@ return(
 
 {tab==="cartes" && (
 <div style={{padding:12}}>
-<div style={{fontWeight:900, color:"#0A1931"}}>Cartes V5.3 Banque • KYC GAS5 • IBAN {accounts[1].iban.slice(0,12)}...</div>
+<div style={{fontWeight:900, color:"#0A1931"}}>Cartes V5.0.3 • KYC GAS5 • IBAN {accounts[1].iban.slice(0,12)}...</div>
 {cards.map((c,i)=>(
 <div key={c.id} style={{background:c.color, borderRadius:18, padding:16, marginTop:12, color:c.t}}>
 <div style={{display:"flex", justifyContent:"space-between"}}><span style={{fontWeight:900, fontSize:11}}>{c.name}</span><span style={{fontSize:9, background:"rgba(16,185,129,0.3)", padding:"4px 8px", borderRadius:20}}>{blocked[i]? "🔒" : "🟢 Active"}</span></div>
@@ -285,7 +306,7 @@ return(
 </div>
 ))}
 <div style={{background:"#fff", borderRadius:12, padding:12, marginTop:12, border:"2px dashed #C9A86A"}}>
-<div style={{fontWeight:900, fontSize:10, color:"#0A1931"}}>🆕 Carte Virtuelle Visa • {virtualCards.length} cartes • IBAN {accounts[1].iban.slice(0,12)}...</div>
+<div style={{fontWeight:900, fontSize:10, color:"#0A1931"}}>🆕 Carte Virtuelle Visa • {virtualCards.length} cartes • IBAN</div>
 <button onClick={createVirtualCardBank} style={{width:"100%", marginTop:8, padding:10, borderRadius:8, background:"#0A1931", color:"#C9A86A", border:"none", fontWeight:900, fontSize:9}}>Créer Carte Virtuelle - KYC GAS5...QVK</button>
 </div>
 </div>
@@ -293,7 +314,7 @@ return(
 
 {tab==="epargne" && (
 <div style={{padding:12}}>
-<div style={{fontWeight:900, color:"#0A1931"}}>Epargne PFM V5.3 Banque • IBAN • Tontine</div>
+<div style={{fontWeight:900, color:"#0A1931"}}>Epargne PFM V5.0.3 • IBAN • Tontine</div>
 <div style={{background:"#fff", borderRadius:12, padding:12, marginTop:8, border:"1px solid #e2e8f0"}}>
 <div style={{fontWeight:800, fontSize:10}}>Budget PFM • IBAN {accounts[1].iban.slice(0,10)}...</div>
 <div style={{display:"flex", gap:4, alignItems:"flex-end", height:50, marginTop:8}}>{[40,70,55,90,60,80].map((h,i)=><div key={i} style={{flex:1, background:i===3? "#C9A86A" : "#0A1931", height:h+"%", borderRadius:4}}></div>)}</div>
@@ -307,7 +328,9 @@ return(
 
 {tab==="plus" && (
 <div style={{padding:12}}>
-<div style={{background:"#0A1931", borderRadius:12, padding:12, color:"#fff", display:"flex", gap:10}}><div style={{width:44, height:44, borderRadius:10, background:"#fff", display:"flex", alignItems:"center", justifyContent:"center"}}>🛡️</div><div><div style={{color:"#F9E2AF", fontWeight:900}}>GARGOURA V5.3 BANQUE COMPLÈTE • KYC GAS5 • IBAN</div><div style={{fontSize:9}}>KYC: {gdbAddr.slice(0,12)}...QVK ✅ • IBAN: {accounts[1].iban}</div></div></div>
+<div style={{background:"#0A1931", borderRadius:12, padding:12, color:"#fff", display:"flex", gap:10}}>
+<img src="/logo.png" alt="GDB" width={44} height={44} style={{width:44, height:44, borderRadius:10, background:"#fff", padding:3, objectFit:"contain"}} onError={(e)=>{(e.currentTarget as HTMLImageElement).style.display="none"}} />
+<div><div style={{color:"#F9E2AF", fontWeight:900}}>GARGOURA V5.0.3 BANQUE COMPLÈTE • KYC GAS5 • IBAN</div><div style={{fontSize:9}}>KYC: {gdbAddr.slice(0,12)}...QVK ✅ • IBAN: {accounts[1].iban}</div></div></div>
 <div style={{marginTop:10, display:"flex", flexDirection:"column", gap:10}}>
 <div style={{background:"#fff", borderRadius:12, padding:12, border:"1px solid #C9A86A", display:"flex", justifyContent:"space-between"}}>
 <div><div style={{fontWeight:900, fontSize:10}}>KYC Pièce 17 BEAC • {kycOk?"✅ Vérifié":"⚠️ En attente"}</div><div style={{fontSize:8, marginTop:4}}>IBAN {accounts[1].iban} • Plafond {limits.journalier.toLocaleString()} XAF</div></div>
